@@ -68,21 +68,21 @@ impl Environment<Action, AgentId> for Board {
     agent_id: &AgentId, 
     a: &Action
   ) -> bool {
-      // Checks whether the board is empty in position a
-      if !self.is_valid(agent_id, a) {
-        return false;
-      } else {
-        let m = 1 << a;
-        if *agent_id == AgentId::X {
-            self.moves_x |= m; 
-            self.current_player = AgentId::O
-          } else {
-            self.moves_o |= m; 
-            self.current_player = AgentId::X
-          }
-        return true;      
-      }
+
+    if !self.is_valid(agent_id, a) {
+      return false;
+    } else {
+      let m = 1 << a;
+      if *agent_id == AgentId::X {
+          self.moves_x |= m; 
+          self.current_player = AgentId::O
+        } else {
+          self.moves_o |= m; 
+          self.current_player = AgentId::X
+        }
+      return true;      
     }
+  }
 
   fn is_valid(&self, 
     agent_id: &AgentId, 
@@ -98,15 +98,15 @@ impl Environment<Action, AgentId> for Board {
   fn is_valid_player(&self, 
     agent_id: &AgentId
   ) -> bool {
-      return *agent_id == self.current_player;
-    }
+    return *agent_id == self.current_player;
+  }
 
   fn is_terminal(&self) -> bool {
-        if is_winning(self.moves_x) { return true; }
-        else if is_winning(self.moves_o) { return true; }
-        else if is_filled(&self) { return true; }
-        else { return false; }
-    }
+      if is_winning(self.moves_x) { return true; }
+      else if is_winning(self.moves_o) { return true; }
+      else if is_filled(&self) { return true; }
+      else { return false; }
+  }
 
   fn winner(&self) -> Option<AgentId> {
     if is_winning(self.moves_x) {
