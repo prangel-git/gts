@@ -11,4 +11,13 @@ fn main() {
     let mut board = Board::initial_state();
 
     abstract_game::play_game(&mut board, &mut player_x, &mut player_o);
+
+    println!("{}", board.to_string());
+    
+    let winner = board.winner();
+    
+    match winner {
+        Some(x) => println!("Player {} wins.", x),
+        None => println!("The game ended in a draw"),
+    }
 }

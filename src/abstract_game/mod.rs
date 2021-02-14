@@ -27,6 +27,9 @@ pub trait Environment<Action, AgentId> {
 
   // Returns true if the environment is in a terminal position.
   fn is_terminal(&self) -> bool;
+
+  // Returns the winner of a final game
+  fn winner(&self) -> Option<AgentId>;
 }
 
 // Functions required to implement a valid agent for an environment T.
@@ -36,19 +39,6 @@ pub trait Agent<Action, AgentId, T> where T: Environment<Action, AgentId> {
 
   // Returns the agent's action given an environment.
   fn action(&mut self, env: &T) -> Action;
-}
-
-// Produces one move of the game
-pub fn one_move<Action, AgentId, T: Environment<Action, AgentId> + Clone, R:Agent<Action, AgentId, T>>(
-  env: & mut T, 
-  agent: &mut R) 
-  -> T {  
-
-    env.update(
-      &agent.agent_identity(), 
-      &agent.action(env));
-    
-    return env.clone();
 }
 
 // TODO: Figure out how to have an arbitrary number of players

@@ -25,7 +25,7 @@ pub type Action = u8;
 pub struct Board {
   moves_x: u16,             // As a binary string. Puts a 1 in the positions where X moved
   moves_o: u16,             // As a binary string. Puts a 1 in the positions where Y moved
-  current_player: AgentId, // Player that will make the next move
+  current_player: AgentId,  // Player that will make the next move
 }
 
 impl fmt::Display for Board {
@@ -88,10 +88,11 @@ impl Environment<Action, AgentId> for Board {
     agent_id: &AgentId, 
     &a: &Action
   ) -> bool {
+      let a_bounded = a <= 8;
       let x_empty = !(((self.moves_x >> a) & 1) == 1);
       let y_empty = !(((self.moves_o >> a) & 1) == 1);
       let valid_player = self.is_valid_player(&agent_id);
-      return x_empty & y_empty & valid_player;
+      return x_empty & y_empty & valid_player & a_bounded;
     }
 
   fn is_valid_player(&self, 
@@ -106,6 +107,17 @@ impl Environment<Action, AgentId> for Board {
         else if is_filled(&self) { return true; }
         else { return false; }
     }
+
+  fn winner(&self) -> Option<AgentId> {
+    if is_winning(self.moves_x) {
+      return Some(AgentId::X);
+    } else if is_winning(self.moves_o) {
+      return Some(AgentId::O);
+    } else {
+      return None;
+    }
+  }
+    
 }
 
 // Checks whether one of the players has a winning position.
