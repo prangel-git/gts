@@ -31,9 +31,6 @@ pub trait Environment<Action, AgentId> {
 
 // Functions required to implement a valid agent for an environment T.
 pub trait Agent<Action, AgentId, T> where T: Environment<Action, AgentId> {
-  // Creates a new agent with a given identity. 
-  fn new(agent_id: &AgentId) -> Self;
-
   // Returns the identity of the agent in the environment T.
   fn agent_identity(&self) -> AgentId;
 
@@ -57,7 +54,7 @@ pub fn one_move<Action, AgentId, T: Environment<Action, AgentId> + Clone, R:Agen
 // TODO: Figure out how to have an arbitrary number of players
 
 // Plays a game with two players
-pub fn play_game<Action, AgentId, T: Environment<Action, AgentId> + Clone, R:Agent<Action, AgentId, T>>(
+pub fn play_game<Action, AgentId, T: Environment<Action, AgentId> + Clone, R:Agent<Action, AgentId, T>> (
   env: &mut T, 
   agent_1: &mut R, 
   agent_2 : &mut R

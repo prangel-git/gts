@@ -4,22 +4,25 @@ use std::fmt::Display;
 
 use super::super::abstract_game::*;
 
-struct HumanPlayer<AgentId>
+pub struct HumanPlayer<AgentId>
 where
 AgentId: Display + Copy 
 {
     agent_id: AgentId,
 }
 
+impl<AgentId> HumanPlayer<AgentId> 
+where 
+AgentId: Display + Copy {
+    pub fn new(agent_id: AgentId) -> Self { Self { agent_id } }
+}
+
+
 impl<Action, AgentId, T> Agent<Action, AgentId, T> for HumanPlayer<AgentId> 
 where 
 Action: FromStr, 
 AgentId: Display + Copy,
 T: Environment<Action, AgentId> + Display {
-    // Creates a new agent with a given identity. 
-  fn new(agent_id: &AgentId) -> Self {
-      HumanPlayer{agent_id: *agent_id}
-  }
 
   // Returns the identity of the agent in the environment T.
   fn agent_identity(&self) -> AgentId {
@@ -44,9 +47,9 @@ T: Environment<Action, AgentId> + Display {
         Ok(_) => println!("Input read correctly"),
         Err(error) => println!("Error reading input {}", error),
     }
-    
-    match buf.parse::<Action>() {
-        Ok(a) => a,
+
+    match buf.trim().parse::<Action>() {
+        Ok(act) => act,
         Err(_) => self.action(env),
     }
   }
