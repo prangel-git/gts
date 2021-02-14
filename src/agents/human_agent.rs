@@ -4,7 +4,10 @@ use std::fmt::Display;
 
 use super::super::abstract_game::*;
 
-struct HumanPlayer<AgentId: Display + Copy>{
+struct HumanPlayer<AgentId>
+where
+AgentId: Display + Copy 
+{
     agent_id: AgentId,
 }
 
@@ -12,7 +15,7 @@ impl<Action, AgentId, T> Agent<Action, AgentId, T> for HumanPlayer<AgentId>
 where 
 Action: FromStr, 
 AgentId: Display + Copy,
-T: Environment<Action, AgentId> + Display{
+T: Environment<Action, AgentId> + Display {
     // Creates a new agent with a given identity. 
   fn new(agent_id: &AgentId) -> Self {
       HumanPlayer{agent_id: *agent_id}
@@ -24,7 +27,7 @@ T: Environment<Action, AgentId> + Display{
   }
 
   // Returns the agent's action given an environment.
-  fn action(&mut self, env: &T) -> Action{
+  fn action(&mut self, env: &T) -> Action {
     
     let player_str = self.agent_id.to_string();
     let env_str = env.to_string();

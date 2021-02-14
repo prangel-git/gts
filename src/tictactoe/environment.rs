@@ -10,7 +10,7 @@ pub enum AgentId{
 type Action = u8;
 
 // Representation of the tic tac toe board
-pub struct Board{
+pub struct Board {
   moves_x: u16,             // As a binary string. Puts a 1 in the positions where X moved
   moves_y: u16,             // As a binary string. Puts a 1 in the positions where Y moved
   current_player: AgentId, // Player that will make the next move
