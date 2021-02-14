@@ -1,5 +1,6 @@
 pub mod abstract_game;
 pub mod tictactoe;
+pub mod agents;
 
 #[cfg(test)]
 mod tests {

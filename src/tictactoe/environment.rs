@@ -2,50 +2,49 @@ use super::super::abstract_game::*;
 
 // Identity of tic tac toe players
 #[derive(Debug, PartialEq)]
-pub enum Players{
+pub enum AgentId{
   X,
   O,
 }
+
+type Action = u8;
 
 // Representation of the tic tac toe board
 pub struct Board{
   moves_x: u16,             // As a binary string. Puts a 1 in the positions where X moved
   moves_y: u16,             // As a binary string. Puts a 1 in the positions where Y moved
-  current_player: Players,  // Player that will make the next move
+  current_player: AgentId, // Player that will make the next move
 }
 
 
-impl Environment for Board {
-  type Action = u8;
-  type AgentIdentity = Players;
-
+impl Environment<Action, AgentId> for Board {
   fn initial_state() -> Self {
-        Board { moves_x: 0, moves_y: 0, current_player: Players::X }
+        Board { moves_x: 0, moves_y: 0, current_player: AgentId::X }
     }
 
   fn update(&mut self, 
-    agent_id: &Self::AgentIdentity, 
-    a: &Self::Action
+    agent_id: &AgentId, 
+    a: &Action
   ) -> bool {
       // Checks whether the board is empty in position a
       if !self.is_valid(agent_id, a) {
         return false;
       } else {
         let m = 1 << a;
-        if *agent_id == Players::X {
+        if *agent_id == AgentId::X {
             self.moves_x |= m; 
-            self.current_player = Players::O
+            self.current_player = AgentId::O
           } else {
             self.moves_y |= m; 
-            self.current_player = Players::X
+            self.current_player = AgentId::X
           }
         return true;      
       }
     }
 
   fn is_valid(&self, 
-    agent_id: &Self::AgentIdentity, 
-    &a: &Self::Action
+    agent_id: &AgentId, 
+    &a: &Action
   ) -> bool {
       let x_empty = !(((self.moves_x >> a) & 1) == 1);
       let y_empty = !(((self.moves_y >> a) & 1) == 1);
@@ -54,7 +53,7 @@ impl Environment for Board {
     }
 
   fn is_valid_player(&self, 
-    agent_id: &Self::AgentIdentity
+    agent_id: &AgentId
   ) -> bool {
       return *agent_id == self.current_player;
     }
@@ -98,29 +97,29 @@ fn manual_game() {
   let mut board = Board::initial_state();
   assert_eq!(board.moves_x, 0);
   assert_eq!(board.moves_y, 0);
-  assert_eq!(board.current_player, Players::X);
+  assert_eq!(board.current_player, AgentId::X);
 
-  assert_eq!(board.update(&Players::X, &4), true);
+  assert_eq!(board.update(&AgentId::X, &4), true);
   assert_eq!(board.moves_x, 0b10000);
-  assert_eq!(board.current_player, Players::O);
+  assert_eq!(board.current_player, AgentId::O);
 
-  assert_eq!(board.update(&Players::O, &5), true);
+  assert_eq!(board.update(&AgentId::O, &5), true);
   assert_eq!(board.moves_y, 0b100000);
-  assert_eq!(board.current_player, Players::X);
+  assert_eq!(board.current_player, AgentId::X);
 
-  assert_eq!(board.update(&Players::X, &0), true);
+  assert_eq!(board.update(&AgentId::X, &0), true);
   assert_eq!(board.moves_x, 0b10001);
-  assert_eq!(board.current_player, Players::O);
+  assert_eq!(board.current_player, AgentId::O);
 
-  assert_eq!(board.update(&Players::O, &0), false);
+  assert_eq!(board.update(&AgentId::O, &0), false);
 
-  assert_eq!(board.update(&Players::O, &1), true);
+  assert_eq!(board.update(&AgentId::O, &1), true);
   assert_eq!(board.moves_y, 0b100010);
-  assert_eq!(board.current_player, Players::X);
+  assert_eq!(board.current_player, AgentId::X);
 
-  assert_eq!(board.update(&Players::X, &8), true);
+  assert_eq!(board.update(&AgentId::X, &8), true);
   assert_eq!(board.moves_x, 0b100010001);
-  assert_eq!(board.current_player, Players::O);
+  assert_eq!(board.current_player, AgentId::O);
 
   assert_eq!(is_filled(&board), false);
   assert_eq!(is_winning(board.moves_y), false);
