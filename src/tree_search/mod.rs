@@ -31,8 +31,7 @@ where
 
             if current_score > best_score {
                 best_score = current_score;
-            } else {
-            };
+            }
         }
 
         return best_score;
