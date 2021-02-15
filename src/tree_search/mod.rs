@@ -21,6 +21,8 @@ fn minmax_search<Action, AgentId, T: Environment<Action, AgentId> + Copy + Clone
         for action in actions {
             new_env = env.clone();
             new_env.update(agent, &action);
+            
+            // TODO: There is an error here. I need to update the agent for the next move.
 
             current_score = minmax_search(&new_env, agent, &reward, new_depth);
 
