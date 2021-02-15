@@ -7,12 +7,12 @@ use games::agents::human_agent;
 fn main() {
     let mut board = Board::initial_state();
 
-    let player_x = Box::new(human_agent::HumanPlayer::new(AgentId::X));
-    let player_o = Box::new(human_agent::HumanPlayer::new(AgentId::O));
+    let mut player_x = human_agent::HumanPlayer::new(AgentId::X);
+    let mut player_o = human_agent::HumanPlayer::new(AgentId::O);
     
-    let players = vec![player_x, player_o];
+    let mut players = vec![&mut player_x, &mut player_o];
 
-    play_game(&mut board, &players);
+    play_game(&mut board, &mut players);
 
     println!("{}", board.to_string());
     

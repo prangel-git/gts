@@ -10,5 +10,5 @@ T: Environment<Action, AgentId>
     fn identity(&self) -> AgentId;
   
     // Returns the agent's action given an environment.
-    fn action(&self, env: &T) -> Action;
+    fn action(&mut self, env: &T) -> Action;
   }

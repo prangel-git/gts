@@ -32,7 +32,7 @@ T: Environment<Action, AgentId> + Display {
   }
 
   // Returns the agent's action given an environment.
-  fn action(&self, env: &T) -> Action {
+  fn action(&mut self, env: &T) -> Action {
     
     let player_str = self.agent_id.to_string();
     let env_str = env.to_string();
