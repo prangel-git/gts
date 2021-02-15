@@ -1,15 +1,18 @@
-use games::abstract_game::Environment;
+use games::abstract_game::environment::Environment;
 use games::abstract_game::play_game;
 use games::tictactoe::environment::AgentId;
 use games::tictactoe::environment::Board;
 use games::agents::human_agent;
 
 fn main() {
-    let mut player_x = human_agent::HumanPlayer::new(AgentId::X);
-    let mut player_o = human_agent::HumanPlayer::new(AgentId::O);
     let mut board = Board::initial_state();
 
-    play_game(&mut board, &mut player_x, &mut player_o);
+    let player_x = Box::new(human_agent::HumanPlayer::new(AgentId::X));
+    let player_o = Box::new(human_agent::HumanPlayer::new(AgentId::O));
+    
+    let players = vec![player_x, player_o];
+
+    play_game(&mut board, &players);
 
     println!("{}", board.to_string());
     

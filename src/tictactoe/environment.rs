@@ -1,9 +1,9 @@
 use std::fmt;
 
-use super::super::abstract_game::*;
+use super::super::abstract_game::environment::Environment;
 
 // Identity of tic tac toe players
-#[derive(Debug, PartialEq, Clone, Copy)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum AgentId{
   X,
   O,
@@ -25,7 +25,7 @@ pub type Action = u8;
 pub struct Board {
   moves_x: u16,             // As a binary string. Puts a 1 in the positions where X moved
   moves_o: u16,             // As a binary string. Puts a 1 in the positions where Y moved
-  current_player: AgentId,  // Player that will make the next move
+  turn: AgentId,  // Player that will make the next move
 }
 
 impl fmt::Display for Board {
@@ -61,45 +61,53 @@ impl fmt::Display for Board {
 
 impl Environment<Action, AgentId> for Board {
   fn initial_state() -> Self {
-        Board { moves_x: 0, moves_o: 0, current_player: AgentId::X }
+        Board { moves_x: 0, moves_o: 0, turn: AgentId::X }
     }
 
   fn update(&mut self, 
     agent_id: &AgentId, 
     a: &Action
   ) -> bool {
-
-    if !self.is_valid(agent_id, a) {
+    if !self.is_valid(a) {
       return false;
     } else {
       let m = 1 << a;
       if *agent_id == AgentId::X {
           self.moves_x |= m; 
-          self.current_player = AgentId::O
+          self.turn = AgentId::O
         } else {
           self.moves_o |= m; 
-          self.current_player = AgentId::X
+          self.turn = AgentId::X
         }
       return true;      
     }
   }
 
+  fn valid_actions(&self, 
+    agent_id: &AgentId
+  ) -> Vec<Action> {
+
+    let mut actions: Vec<Action> = Vec::new();
+        if !(self.turn() == *agent_id) {
+          return actions;
+        } else {
+          for a in 0..9 {
+            if self.is_valid(&a) {
+              actions.push(a);
+            } else {}
+          }
+        }
+        return actions;
+    }
+
   fn is_valid(&self, 
-    agent_id: &AgentId, 
     &a: &Action
   ) -> bool {
       let a_bounded = a <= 8;
       let x_empty = !(((self.moves_x >> a) & 1) == 1);
       let y_empty = !(((self.moves_o >> a) & 1) == 1);
-      let valid_player = self.is_valid_player(&agent_id);
-      return x_empty & y_empty & valid_player & a_bounded;
+      return a_bounded & x_empty & y_empty;
     }
-
-  fn is_valid_player(&self, 
-    agent_id: &AgentId
-  ) -> bool {
-    return *agent_id == self.current_player;
-  }
 
   fn is_terminal(&self) -> bool {
       if is_winning(self.moves_x) { return true; }
@@ -107,6 +115,10 @@ impl Environment<Action, AgentId> for Board {
       else if is_filled(&self) { return true; }
       else { return false; }
   }
+
+  fn turn(&self) -> AgentId {
+      return self.turn;
+    }
 
   fn winner(&self) -> Option<AgentId> {
     if is_winning(self.moves_x) {
@@ -117,23 +129,6 @@ impl Environment<Action, AgentId> for Board {
       return None;
     }
   }
-
-  fn valid_actions(&self, 
-    agent_id: &AgentId
-  ) -> Vec<Action> {
-
-    let mut actions: Vec<Action> = Vec::new();
-        if !self.is_valid_player(agent_id) {
-          return actions;
-        } else {
-          for a in 0..9 {
-            if self.is_valid(agent_id, &a) {
-              actions.push(a);
-            } else {}
-          }
-        }
-        return actions;
-    }
 }
 
 // Checks whether one of the players has a winning position.
@@ -167,29 +162,29 @@ fn manual_game() {
   let mut board = Board::initial_state();
   assert_eq!(board.moves_x, 0);
   assert_eq!(board.moves_o, 0);
-  assert_eq!(board.current_player, AgentId::X);
+  assert_eq!(board.turn(), AgentId::X);
 
   assert_eq!(board.update(&AgentId::X, &4), true);
   assert_eq!(board.moves_x, 0b10000);
-  assert_eq!(board.current_player, AgentId::O);
+  assert_eq!(board.turn(), AgentId::O);
 
   assert_eq!(board.update(&AgentId::O, &5), true);
   assert_eq!(board.moves_o, 0b100000);
-  assert_eq!(board.current_player, AgentId::X);
+  assert_eq!(board.turn(), AgentId::X);
 
   assert_eq!(board.update(&AgentId::X, &0), true);
   assert_eq!(board.moves_x, 0b10001);
-  assert_eq!(board.current_player, AgentId::O);
+  assert_eq!(board.turn(), AgentId::O);
 
   assert_eq!(board.update(&AgentId::O, &0), false);
 
   assert_eq!(board.update(&AgentId::O, &1), true);
   assert_eq!(board.moves_o, 0b100010);
-  assert_eq!(board.current_player, AgentId::X);
+  assert_eq!(board.turn(), AgentId::X);
 
   assert_eq!(board.update(&AgentId::X, &8), true);
   assert_eq!(board.moves_x, 0b100010001);
-  assert_eq!(board.current_player, AgentId::O);
+  assert_eq!(board.turn(), AgentId::O);
 
   assert_eq!(is_filled(&board), false);
   assert_eq!(is_winning(board.moves_o), false);

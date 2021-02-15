@@ -1,16 +1,21 @@
-use super::abstract_game::Environment;
+use super::abstract_game::environment::Environment;
 
 
-fn minmax_search<Action, AgentId, T: Environment<Action, AgentId> + Copy + Clone>(
+fn minmax_search<Action, AgentId, T>(
     env: &T,
     agent: &AgentId,
     reward: impl Fn(&T, &AgentId) -> f64,
     depth: u8
-) -> f64 {
+) -> f64
+where
+AgentId: Eq,
+T: Environment<Action, AgentId> + Copy + Clone
+{
     if env.is_terminal() | (depth == 0) {
         return reward(env, agent);
     } else {
         let mut new_env;
+        let mut new_agent: AgentId;
         let new_depth = depth - 1;
 
         let actions = env.valid_actions(agent);
@@ -21,10 +26,9 @@ fn minmax_search<Action, AgentId, T: Environment<Action, AgentId> + Copy + Clone
         for action in actions {
             new_env = env.clone();
             new_env.update(agent, &action);
-            
-            // TODO: There is an error here. I need to update the agent for the next move.
+            new_agent = new_env.turn();
 
-            current_score = minmax_search(&new_env, agent, &reward, new_depth);
+            current_score = minmax_search(&new_env, &new_agent, &reward, new_depth);
 
             if current_score > best_score {
                 best_score = current_score;

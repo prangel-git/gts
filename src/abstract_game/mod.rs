@@ -1,75 +1,33 @@
-use std::vec;
+pub mod environment;
+pub mod agent;
 
-// Contains the traits and functions required to implement a board game.
 
 
-// Functions required to represent an environment. 
-// Action: Type of the actions on the environment.
-// AgentId: Type of the agent identificaiton.
-pub trait Environment<Action, AgentId> {
-  // Produces an initial environment
-  fn initial_state() -> Self;       
-  
-  // Returns true iff the environment gets updated when 'agent' performs action 'a'.
-  fn update(&mut self, 
-    agent_id: &AgentId, 
-    a: &Action
-  ) -> bool;
 
-  // Returns a vector with the valid actions for a given agent
-  fn valid_actions(&self, 
-    agent_id: &AgentId
-  ) -> Vec<Action>;
-
-  // Returns true iff 'agent' can perform action 'a'.
-  fn is_valid(&self, 
-    agent_id: &AgentId, 
-    a: &Action
-  ) -> bool;
-  
-  // Returns true iff 'agent' can perform an action.
-  fn is_valid_player(&self, 
-    agent_id: &AgentId
-  ) -> bool;
-
-  // Returns true if the environment is in a terminal position.
-  fn is_terminal(&self) -> bool;
-
-  // Returns the winner of a final game
-  fn winner(&self) -> Option<AgentId>;
-}
-
-// Functions required to implement a valid agent for an environment T.
-pub trait Agent<Action, AgentId, T> where T: Environment<Action, AgentId> {
-  // Returns the identity of the agent in the environment T.
-  fn agent_identity(&self) -> AgentId;
-
-  // Returns the agent's action given an environment.
-  fn action(&mut self, env: &T) -> Action;
-}
-
-// TODO: Figure out how to have an arbitrary number of players
-
-// Plays a game with two players
-pub fn play_game<Action, AgentId, T: Environment<Action, AgentId> + Clone, R:Agent<Action, AgentId, T>> (
+// Plays a game in Envirnment 'env', and agents in 'agents'.
+pub fn play_game<Action, AgentId, T, R> (
   env: &mut T, 
-  agent_1: &mut R, 
-  agent_2 : &mut R
-) -> Vec<T> {
+  agents: &Vec<Box<R>>
+) -> Vec<(AgentId, Action)> 
+where
+AgentId: Eq, 
+T: environment::Environment<Action, AgentId>,
+R: agent::Agent<Action, AgentId, T>
+{
   let mut game_log = Vec::new();
 
-  while !env.is_terminal() {
-
-    while env.is_valid_player(&agent_1.agent_identity()) {
-      env.update(&agent_1.agent_identity(), &agent_1.action(env));
-      game_log.push(env.clone())
-    }
+  while !env.is_terminal() {    
     
-    while env.is_valid_player(&agent_2.agent_identity()) {
-      env.update(&agent_2.agent_identity(), &agent_2.action(env));
-      game_log.push(env.clone());
+    for agent in agents {
+      let identity = agent.identity();
+      if identity == env.turn() {
+        let action = agent.action(env);
+        env.update(&identity, &action);
+
+        game_log.push((identity, action));
+      } else {};   
+
     }
   }
-
   return game_log;
 }
