@@ -117,7 +117,23 @@ impl Environment<Action, AgentId> for Board {
       return None;
     }
   }
-    
+
+  fn valid_actions(&self, 
+    agent_id: &AgentId
+  ) -> Vec<Action> {
+
+    let mut actions: Vec<Action> = Vec::new();
+        if !self.is_valid_player(agent_id) {
+          return actions;
+        } else {
+          for a in 0..9 {
+            if self.is_valid(agent_id, &a) {
+              actions.push(a);
+            } else {}
+          }
+        }
+        return actions;
+    }
 }
 
 // Checks whether one of the players has a winning position.

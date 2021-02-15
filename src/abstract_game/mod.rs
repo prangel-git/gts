@@ -1,3 +1,5 @@
+use std::vec;
+
 // Contains the traits and functions required to implement a board game.
 
 
@@ -13,6 +15,11 @@ pub trait Environment<Action, AgentId> {
     agent_id: &AgentId, 
     a: &Action
   ) -> bool;
+
+  // Returns a vector with the valid actions for a given agent
+  fn valid_actions(&self, 
+    agent_id: &AgentId
+  ) -> Vec<Action>;
 
   // Returns true iff 'agent' can perform action 'a'.
   fn is_valid(&self, 
