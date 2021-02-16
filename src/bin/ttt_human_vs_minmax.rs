@@ -10,7 +10,7 @@ use games::tictactoe::environment::Board;
 use games::tree_search::depth_first_reward;
 use minmax_agent::MinmaxAgent;
 
-// Plays tic tac toe with two human players.
+// Plays tic tac toe with a human player vs minmax player
 fn main() {
     let mut board = Board::initial_state();
 

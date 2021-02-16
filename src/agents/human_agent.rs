@@ -20,6 +20,8 @@ where
     }
 }
 
+// Implements the agent trait for human players. The idea is that this player will 
+// the action from the keyboard.
 impl<Action, AgentId, T> Agent<Action, AgentId, T> for HumanPlayer<AgentId>
 where
     Action: FromStr,

@@ -1,5 +1,5 @@
 use games::abstractions::environment::Environment;
-use games::abstractions::play_game;
+use games::abstractions::play_game_2players;
 use games::agents::human_agent;
 use games::tictactoe::environment::AgentId;
 use games::tictactoe::environment::Board;
@@ -11,9 +11,7 @@ fn main() {
     let mut player_x = human_agent::HumanPlayer::new(AgentId::X);
     let mut player_o = human_agent::HumanPlayer::new(AgentId::O);
 
-    let mut players = vec![&mut player_x, &mut player_o];
-
-    play_game(&mut board, &mut players);
+    play_game_2players(&mut board, &mut player_x, &mut player_o);
 
     println!("{}", board.to_string());
 
