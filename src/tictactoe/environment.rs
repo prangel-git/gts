@@ -72,7 +72,7 @@ impl Environment<Action, AgentId> for Board {
             return false;
         } else {
             let m = 1 << a;
-            if self.turn() == AgentId::X {
+            if self.turn == AgentId::X {
                 self.moves_x |= m;
                 self.turn = AgentId::O
             } else {
@@ -175,25 +175,25 @@ mod tests {
 
         assert_eq!(board.update(&&4), true);
         assert_eq!(board.moves_x, 0b10000);
-        assert_eq!(board.turn(), AgentId::O);
+        assert_eq!(board.turn, AgentId::O);
 
         assert_eq!(board.update(&5), true);
         assert_eq!(board.moves_o, 0b100000);
-        assert_eq!(board.turn(), AgentId::X);
+        assert_eq!(board.turn, AgentId::X);
 
         assert_eq!(board.update(&0), true);
         assert_eq!(board.moves_x, 0b10001);
-        assert_eq!(board.turn(), AgentId::O);
+        assert_eq!(board.turn, AgentId::O);
 
         assert_eq!(board.update(&0), false);
 
         assert_eq!(board.update(&1), true);
         assert_eq!(board.moves_o, 0b100010);
-        assert_eq!(board.turn(), AgentId::X);
+        assert_eq!(board.turn, AgentId::X);
 
         assert_eq!(board.update(&8), true);
         assert_eq!(board.moves_x, 0b100010001);
-        assert_eq!(board.turn(), AgentId::O);
+        assert_eq!(board.turn, AgentId::O);
 
         assert_eq!(is_filled(&board), false);
         assert_eq!(is_winning(board.moves_o), false);
