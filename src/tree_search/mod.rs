@@ -4,10 +4,10 @@ use super::abstract_game::environment::Environment;
 // an estimate of the value. To calculate that estimate, the functions visits the tree of
 // possible actions up to a given depth, and assumes that all visiting agents will take
 // actions that will maximize the reward function.
-fn minmax_search<Action, AgentId, T>(
+pub fn minmax_search<Action, AgentId, T>(
     env: &T,
     agent: &AgentId,
-    reward: impl Fn(&T, &AgentId) -> f64,
+    reward: &dyn Fn(&T, &AgentId) -> f64,
     depth: u8,
 ) -> f64
 where
@@ -42,7 +42,7 @@ where
     }
 }
 
-fn naive_reward<Action, AgentId, T>(env: &T, agent: &AgentId) -> f64
+pub fn naive_reward<Action, AgentId, T>(env: &T, agent: &AgentId) -> f64
 where
     AgentId: Eq,
     T: Environment<Action, AgentId> + Copy + Clone,
