@@ -1,5 +1,5 @@
-use games::abstract::environment::Environment;
-use games::abstract::play_game;
+use games::abstract_structs::environment::Environment;
+use games::abstract_structs::play_game;
 use games::agents::human_agent;
 use games::tictactoe::environment::AgentId;
 use games::tictactoe::environment::Board;

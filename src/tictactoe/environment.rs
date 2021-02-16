@@ -1,6 +1,6 @@
 use std::fmt;
 
-use super::super::abstract::environment::Environment;
+use super::super::abstract_structs::environment::Environment;
 
 // Identity of tic tac toe players
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]

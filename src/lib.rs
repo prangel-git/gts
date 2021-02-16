@@ -1,4 +1,4 @@
-pub mod abstract;
+pub mod abstract_structs;
 pub mod agents;
 pub mod tictactoe;
 pub mod tree_search;

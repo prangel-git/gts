@@ -1,8 +1,8 @@
 use std::fmt::Display;
 use std::{io, str::FromStr};
 
-use super::super::abstract::agent::Agent;
-use super::super::abstract::environment::Environment;
+use super::super::abstract_structs::agent::Agent;
+use super::super::abstract_structs::environment::Environment;
 
 pub struct HumanPlayer<AgentId>
 where
