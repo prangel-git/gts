@@ -26,7 +26,7 @@ where
     if env.is_terminal() | (depth == 0) {
         let value = reward(env, agent_id);
         cache.insert((*env, *agent_id), value);
-        return reward(env, agent_id);
+        return value;
     } else {
         let new_depth = depth - 1;
         let actions = env.valid_actions();

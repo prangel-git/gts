@@ -14,8 +14,8 @@ use minmax_agent::MinmaxAgent;
 fn main() {
     let mut board = Board::initial_state();
 
-    let mut player_x = human_agent::HumanPlayer::new(AgentId::X);
-    let mut player_o = MinmaxAgent::new(AgentId::O, &depth_first_reward, 10);
+    let mut player_o = human_agent::HumanPlayer::new(AgentId::O);
+    let mut player_x = MinmaxAgent::new(AgentId::X, &depth_first_reward, 10);
 
     play_game_2players(&mut board, &mut player_x, &mut player_o);
 
