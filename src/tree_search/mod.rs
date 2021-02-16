@@ -10,7 +10,7 @@ use std::hash::Hash;
 // actions that will maximize the reward function.
 pub fn minmax_search<Action, AgentId, T>(
     env: &T,
-    agent: &AgentId,
+    agent_id: &AgentId,
     reward: &dyn Fn(&T, &AgentId) -> f64,
     depth: u8,
     cache: &mut HashMap<(T, AgentId), f64>,
@@ -19,18 +19,18 @@ where
     AgentId: Eq + Hash + Copy,
     T: Environment<Action, AgentId> + Copy + Clone + Eq + Hash,
 {
-    match cache.entry((*env, *agent)) {
+    match cache.entry((*env, *agent_id)) {
         hash_map::Entry::Occupied(entry) => return *entry.get(),
         hash_map::Entry::Vacant(_) => {}
     }
     if env.is_terminal() | (depth == 0) {
-        let value = reward(env, agent);
-        cache.insert((*env, *agent), value);
-        return reward(env, agent);
+        let value = reward(env, agent_id);
+        cache.insert((*env, *agent_id), value);
+        return reward(env, agent_id);
     } else {
         let new_depth = depth - 1;
         let actions = env.valid_actions();
-        let is_agent_turn = env.turn() == *agent;
+        let is_agent_turn = env.turn() == *agent_id;
 
         let init_value = if is_agent_turn {
             f64::NEG_INFINITY
@@ -43,13 +43,13 @@ where
         let value = actions
             .iter()
             .map(|x| env.what_if(x))
-            .map(|x| minmax_search(&x, agent, &reward, new_depth, cache))
+            .map(|x| minmax_search(&x, agent_id, &reward, new_depth, cache))
             .fold(
                 init_value,
                 |a: f64, b: f64| if is_agent_turn { a.max(b) } else { a.min(b) },
             );
 
-        cache.insert((*env, *agent), value);
+        cache.insert((*env, *agent_id), value);
 
         return value;
     }

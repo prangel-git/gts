@@ -13,4 +13,6 @@ where
 
     // Returns the agent's action given an environment.
     fn action(&mut self, env: &T) -> Action;
+
+    // TODO: It might be best if method action returns an Option<Action> instead.
 }
