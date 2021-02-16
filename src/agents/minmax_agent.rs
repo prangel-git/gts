@@ -6,9 +6,9 @@ use super::super::abstractions::environment::Environment;
 
 use super::super::tree_search::minmax_search;
 
-// A minmax agent will play by finding the best move found by the
-// minmax search with a given depth and reward function.
-// The agent caches moves previously seen
+/// A minmax agent will play by finding the best move found by the
+/// minmax search with a given depth and reward function.
+/// The agent caches moves previously seen
 pub struct MinmaxAgent<'a, AgentId, T>
 where
     AgentId: Eq + Hash + Copy,
@@ -20,6 +20,7 @@ where
     cache: HashMap<(T, AgentId), f64>,
 }
 
+/// Methods for MinmaxAgent
 impl<'a, AgentId, T> MinmaxAgent<'a, AgentId, T>
 where
     AgentId: Eq + Hash + Copy,
@@ -39,19 +40,19 @@ where
 // This will produce bad moves unless the agent explores
 // the whole tree in the first pass.
 
-// Implements an agent that runs the minmax tree search arlgorithm to produce moves.
+/// Implements an agent that runs the minmax tree search arlgorithm to produce moves.
 impl<'a, Action, AgentId, T> Agent<Action, AgentId, T> for MinmaxAgent<'a, AgentId, T>
 where
     AgentId: Eq + Hash + Copy,
     Action: Copy,
     T: Environment<Action, AgentId> + Eq + Hash + Copy,
 {
-    // Returns the agent identity in the game.
+    /// Returns the agent identity in the game.
     fn identity(&self) -> AgentId {
         return self.agent_id;
     }
 
-    // Produces an action based on minmax search.
+    /// Produces an action based on minmax search.
     fn action(&mut self, env: &T) -> Action {
         let actions = env.valid_actions();
 
