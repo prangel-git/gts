@@ -1,5 +1,7 @@
 use super::abstractions::environment::Environment;
 
+use std::collections::HashMap;
+
 // Given a reward function, an agent identifier, and an environment, this function returns
 // an estimate of the value. To calculate that estimate, the functions visits the tree of
 // possible actions up to a given depth, and assumes that all visiting agents will take

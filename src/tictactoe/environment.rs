@@ -18,6 +18,7 @@ impl fmt::Display for AgentId {
     }
 }
 
+// Actions will be a number from 0 to 8 representing the position on the tic tac toe board.
 pub type Action = u8;
 
 // Representation of the tic tac toe board
@@ -59,6 +60,7 @@ impl fmt::Display for Board {
 }
 
 impl Environment<Action, AgentId> for Board {
+    // Initializes an empty tic tac toe board.
     fn initial_state() -> Self {
         Board {
             moves_x: 0,
@@ -67,6 +69,8 @@ impl Environment<Action, AgentId> for Board {
         }
     }
 
+    // Updates the board by filling the position given by action.
+    // Returns true iff the board was updated by the action.
     fn update(&mut self, a: &Action) -> bool {
         if !self.is_valid(a) {
             return false;
@@ -83,12 +87,14 @@ impl Environment<Action, AgentId> for Board {
         }
     }
 
+    // Returns a board with what would happen if action 'a' were performed.
     fn what_if(&self, a: &Action) -> Self {
         let mut board = self.clone();
         board.update(a);
         return board;
     }
 
+    // Produces a list of valid actions in the current board.
     fn valid_actions(&self) -> Vec<Action> {
         let mut actions: Vec<Action> = Vec::new();
 
@@ -101,13 +107,15 @@ impl Environment<Action, AgentId> for Board {
         return actions;
     }
 
+    // Returns true iff the action 'a' is valid in the current board.
     fn is_valid(&self, &a: &Action) -> bool {
         let a_bounded = a <= 8;
         let x_empty = !(((self.moves_x >> a) & 1) == 1);
         let y_empty = !(((self.moves_o >> a) & 1) == 1);
         return a_bounded & x_empty & y_empty;
     }
-
+    
+    // Returns true iff the board is in a terminal position.
     fn is_terminal(&self) -> bool {
         if is_winning(self.moves_x) {
             return true;
@@ -120,10 +128,13 @@ impl Environment<Action, AgentId> for Board {
         }
     }
 
+    // Returns the agentId of the player for the next move.
     fn turn(&self) -> AgentId {
         return self.turn;
     }
 
+    // It returns Some(agentId) with agentId  of the player who won the game.
+    // If no player had won, it returns None
     fn winner(&self) -> Option<AgentId> {
         if is_winning(self.moves_x) {
             return Some(AgentId::X);
@@ -137,6 +148,8 @@ impl Environment<Action, AgentId> for Board {
 
 // Checks whether one of the players has a winning position.
 fn is_winning(position: u16) -> bool {
+    
+    // Binary representation of positions that win the game.
     let winning_masks = vec![
         0b111u16,
         0b111000u16,
@@ -166,7 +179,9 @@ fn is_filled(board: &Board) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
+    
     #[test]
+    // Plays a manual game and check that the board updates accordingly.
     fn manual_game() {
         let mut board = Board::initial_state();
         assert_eq!(board.moves_x, 0);

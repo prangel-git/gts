@@ -1,6 +1,6 @@
 // Functions required to represent an environment.
-// Action: Type of the actions on the environment.
-// AgentId: Type of the agent identificaiton.
+// Action: Type of the actions that the environment accepts.
+// AgentId: Type of the agent identity in the environment.
 pub trait Environment<Action, AgentId>
 where
     AgentId: Eq,

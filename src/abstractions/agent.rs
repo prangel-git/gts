@@ -1,6 +1,8 @@
 use super::environment::Environment;
 
 // Functions required to implement a valid agent for an environment T.
+// Action: Type of the action performed by agent.
+// AgentId: Type of the agent identity in the environment.
 pub trait Agent<Action, AgentId, T>
 where
     AgentId: Eq,
