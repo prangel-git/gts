@@ -1,8 +1,8 @@
 pub mod agent;
 pub mod environment;
 
-// TODO: Figure out how to play with a list of players.
-// Note that players can have different types as far as they
+// TODO: Figure out how to play with a list of players. 
+// Note that players can have different types as far as they 
 // implement the Agent trait.
 
 // Plays a game in Envirnment 'env', and two agents.
