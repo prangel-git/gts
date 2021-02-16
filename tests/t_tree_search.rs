@@ -1,7 +1,7 @@
 use games::abstractions::environment::Environment;
 use games::tictactoe::environment::AgentId;
 use games::tictactoe::environment::Board;
-use games::tree_search::minmax_search;
+// use games::tree_search::minmax_search;
 use games::tree_search::naive_reward;
 
 #[test]
@@ -21,8 +21,8 @@ fn minmax_sanity_check() {
     assert_eq!(1, value_x as i16);
     assert_eq!(-1, value_o as i16);
 
-    let value_x = minmax_search(&board, &id_x, &naive_reward, 1);
-    let value_o = minmax_search(&board, &id_o, &naive_reward, 3);
+    // let value_x = minmax_search(&board, &id_x, &naive_reward, 1);
+    // let value_o = minmax_search(&board, &id_o, &naive_reward, 3);
 
     assert_eq!(1, value_x as i16);
     assert_eq!(-1, value_o as i16);
