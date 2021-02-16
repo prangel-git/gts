@@ -3,7 +3,7 @@ use std::fmt;
 use super::super::abstractions::environment::Environment;
 
 // Identity of tic tac toe players
-#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
 pub enum AgentId {
     X,
     O,
@@ -22,7 +22,7 @@ impl fmt::Display for AgentId {
 pub type Action = u8;
 
 // Representation of the tic tac toe board
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, Hash, Eq, PartialEq)]
 pub struct Board {
     moves_x: u16,  // As a binary string. Puts a 1 in the positions where X moved
     moves_o: u16,  // As a binary string. Puts a 1 in the positions where Y moved
@@ -114,7 +114,7 @@ impl Environment<Action, AgentId> for Board {
         let y_empty = !(((self.moves_o >> a) & 1) == 1);
         return a_bounded & x_empty & y_empty;
     }
-    
+
     // Returns true iff the board is in a terminal position.
     fn is_terminal(&self) -> bool {
         if is_winning(self.moves_x) {
@@ -148,7 +148,6 @@ impl Environment<Action, AgentId> for Board {
 
 // Checks whether one of the players has a winning position.
 fn is_winning(position: u16) -> bool {
-    
     // Binary representation of positions that win the game.
     let winning_masks = vec![
         0b111u16,
@@ -179,7 +178,7 @@ fn is_filled(board: &Board) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
-    
+
     #[test]
     // Plays a manual game and check that the board updates accordingly.
     fn manual_game() {

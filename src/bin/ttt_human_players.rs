@@ -4,7 +4,7 @@ use games::agents::human_agent;
 use games::tictactoe::environment::AgentId;
 use games::tictactoe::environment::Board;
 
-// Plays tic tac toe with two human players. 
+// Plays tic tac toe with two human players.
 fn main() {
     let mut board = Board::initial_state();
 

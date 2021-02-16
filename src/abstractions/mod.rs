@@ -2,7 +2,7 @@ pub mod agent;
 pub mod environment;
 
 // Plays a game in Envirnment 'env', and agents in 'agents'.
-// It returns a vector with a log of pairs containing 
+// It returns a vector with a log of pairs containing
 // the agent identity and the action performed by the agent.
 pub fn play_game<Action, AgentId, T, R>(
     env: &mut T,
@@ -17,7 +17,6 @@ where
 
     while !env.is_terminal() {
         for agent in agents.iter_mut() {
-            
             let identity = agent.identity();
             if identity == env.turn() {
                 let action = agent.action(env);
