@@ -9,10 +9,13 @@ where
     fn initial_state() -> Self;
 
     // Returns true iff the environment gets updated when 'agent' performs action 'a'.
-    fn update(&mut self, agent_id: &AgentId, a: &Action) -> bool;
+    fn update(&mut self, a: &Action) -> bool;
+
+    // Returns what would happen an agent attempts a given action
+    fn what_if(&self, a: &Action) -> Self;
 
     // Returns a vector with the valid actions for a given agent
-    fn valid_actions(&self, agent_id: &AgentId) -> Vec<Action>;
+    fn valid_actions(&self) -> Vec<Action>;
 
     // Returns true iff the environment accepts 'action'.
     fn is_valid(&self, action: &Action) -> bool;

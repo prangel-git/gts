@@ -18,7 +18,7 @@ where
             let identity = agent.identity();
             if identity == env.turn() {
                 let action = agent.action(env);
-                env.update(&identity, &action);
+                env.update(&action);
 
                 game_log.push((identity, action));
 

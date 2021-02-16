@@ -67,12 +67,12 @@ impl Environment<Action, AgentId> for Board {
         }
     }
 
-    fn update(&mut self, agent_id: &AgentId, a: &Action) -> bool {
+    fn update(&mut self, a: &Action) -> bool {
         if !self.is_valid(a) {
             return false;
         } else {
             let m = 1 << a;
-            if *agent_id == AgentId::X {
+            if self.turn() == AgentId::X {
                 self.moves_x |= m;
                 self.turn = AgentId::O
             } else {
@@ -83,16 +83,19 @@ impl Environment<Action, AgentId> for Board {
         }
     }
 
-    fn valid_actions(&self, agent_id: &AgentId) -> Vec<Action> {
+    fn what_if(&self, a: &Action) -> Self {
+        let mut board = self.clone();
+        board.update(a);
+        return board;
+    }
+
+    fn valid_actions(&self) -> Vec<Action> {
         let mut actions: Vec<Action> = Vec::new();
-        if !(self.turn() == *agent_id) {
-            return actions;
-        } else {
-            for a in 0..9 {
-                if self.is_valid(&a) {
-                    actions.push(a);
-                } else {
-                }
+
+        for a in 0..9 {
+            if self.is_valid(&a) {
+                actions.push(a);
+            } else {
             }
         }
         return actions;
@@ -167,25 +170,25 @@ fn manual_game() {
     assert_eq!(board.moves_o, 0);
     assert_eq!(board.turn(), AgentId::X);
 
-    assert_eq!(board.update(&AgentId::X, &4), true);
+    assert_eq!(board.update(&&4), true);
     assert_eq!(board.moves_x, 0b10000);
     assert_eq!(board.turn(), AgentId::O);
 
-    assert_eq!(board.update(&AgentId::O, &5), true);
+    assert_eq!(board.update(&5), true);
     assert_eq!(board.moves_o, 0b100000);
     assert_eq!(board.turn(), AgentId::X);
 
-    assert_eq!(board.update(&AgentId::X, &0), true);
+    assert_eq!(board.update(&0), true);
     assert_eq!(board.moves_x, 0b10001);
     assert_eq!(board.turn(), AgentId::O);
 
-    assert_eq!(board.update(&AgentId::O, &0), false);
+    assert_eq!(board.update(&0), false);
 
-    assert_eq!(board.update(&AgentId::O, &1), true);
+    assert_eq!(board.update(&1), true);
     assert_eq!(board.moves_o, 0b100010);
     assert_eq!(board.turn(), AgentId::X);
 
-    assert_eq!(board.update(&AgentId::X, &8), true);
+    assert_eq!(board.update(&8), true);
     assert_eq!(board.moves_x, 0b100010001);
     assert_eq!(board.turn(), AgentId::O);
 

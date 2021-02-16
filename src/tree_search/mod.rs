@@ -1,5 +1,9 @@
 use super::abstract_game::environment::Environment;
 
+// Given a reward function, an agent identifier, and an environment, this function returns
+// an estimate of the value. To calculate that estimate, the functions visits the tree of
+// possible actions up to a given depth, and assumes that all visiting agents will take
+// actions that will maximize the reward function.
 fn minmax_search<Action, AgentId, T>(
     env: &T,
     agent: &AgentId,
@@ -13,27 +17,68 @@ where
     if env.is_terminal() | (depth == 0) {
         return reward(env, agent);
     } else {
-        let mut new_env;
-        let mut new_agent: AgentId;
         let new_depth = depth - 1;
+        let actions = env.valid_actions();
+        let is_agent_turn = env.turn() == *agent;
 
-        let actions = env.valid_actions(agent);
+        let init_value = if is_agent_turn {
+            f64::NEG_INFINITY
+        } else {
+            f64::INFINITY
+        };
 
-        let mut best_score = f64::NEG_INFINITY;
-        let mut current_score;
+        // For each action, performs the action, calculates the value of the new environment,
+        // and maximizes or minimizes that value depending on whether it is the turn of the player or not.
+        let next_env = actions
+            .iter()
+            .map(|x| env.what_if(x))
+            .map(|x| minmax_search(&x, agent, &reward, new_depth))
+            .fold(
+                init_value,
+                |a: f64, b: f64| if is_agent_turn { a.max(b) } else { a.min(b) },
+            );
 
-        for action in actions {
-            new_env = env.clone();
-            new_env.update(agent, &action);
-            new_agent = new_env.turn();
+        return next_env;
+    }
+}
 
-            current_score = minmax_search(&new_env, &new_agent, &reward, new_depth);
-
-            if current_score > best_score {
-                best_score = current_score;
+fn naive_reward<Action, AgentId, T>(env: &T, agent: &AgentId) -> f64
+where
+    AgentId: Eq,
+    T: Environment<Action, AgentId> + Copy + Clone,
+{
+    if env.is_terminal() {
+        match env.winner() {
+            Some(a) => {
+                if a == *agent {
+                    return 1.0;
+                } else {
+                    return -1.0;
+                }
             }
+            None => return 0.0,
         }
+    } else {
+        let actions = env.valid_actions();
+        let is_agent_turn = env.turn() == *agent;
 
-        return best_score;
+        let init_value = if is_agent_turn {
+            f64::NEG_INFINITY
+        } else {
+            f64::INFINITY
+        };
+
+        // For each action, performs the action, calculates the value of the new environment,
+        // and maximizes or minimizes that value depending on whether it is the turn of the player or not.
+        let next_env = actions
+            .iter()
+            .map(|x| env.what_if(x))
+            .map(|x| naive_reward(&x, agent))
+            .fold(
+                init_value,
+                |a: f64, b: f64| if is_agent_turn { a.max(b) } else { a.min(b) },
+            );
+
+        return next_env;
     }
 }
