@@ -1,4 +1,4 @@
-use games::abstract_game::environment::Environment;
+use games::abstract::environment::Environment;
 use games::tictactoe::environment::AgentId;
 use games::tictactoe::environment::Board;
 use games::tree_search::minmax_search;

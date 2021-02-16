@@ -1,4 +1,4 @@
-use super::abstract_game::environment::Environment;
+use super::abstract::environment::Environment;
 
 // Given a reward function, an agent identifier, and an environment, this function returns
 // an estimate of the value. To calculate that estimate, the functions visits the tree of
