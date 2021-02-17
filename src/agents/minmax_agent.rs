@@ -36,10 +36,6 @@ where
     }
 }
 
-// TODO: Currently, the agent doesn't refresh the cache.
-// This will produce bad moves unless the agent explores
-// the whole tree in the first pass.
-
 /// Implements an agent that runs the minmax tree search arlgorithm to produce moves.
 impl<'a, Action, AgentId, T> Agent<Action, AgentId, T> for MinmaxAgent<'a, AgentId, T>
 where
@@ -59,12 +55,6 @@ where
         if actions.is_empty() {
             panic!("I don't have any actions to take!");
         } else {
-            // TODO: Pick the best action from all the best actions at random.
-
-            // TODO: This code can be written better.
-
-            // TODO: Find ways of refreshing the cache properly.
-
             let mut best_action = actions[0];
             let mut best_value = f64::NEG_INFINITY;
 
@@ -81,6 +71,8 @@ where
                     best_action = action;
                 }
             }
+            self.cache.clear();
+
             return best_action;
         }
     }
