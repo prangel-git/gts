@@ -49,11 +49,11 @@ where
     }
 
     /// Produces an action based on minmax search.
-    fn action(&mut self, env: &T) -> Action {
+    fn action(&mut self, env: &T) -> Option<Action> {
         let actions = env.valid_actions();
 
         if actions.is_empty() {
-            panic!("I don't have any actions to take!");
+            return None;
         } else {
             let mut best_action = actions[0];
             let mut best_value = f64::NEG_INFINITY;
@@ -73,7 +73,7 @@ where
             }
             self.cache.clear();
 
-            return best_action;
+            return Some(best_action);
         }
     }
 }

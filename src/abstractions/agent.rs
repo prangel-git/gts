@@ -12,5 +12,5 @@ where
     fn identity(&self) -> AgentId;
 
     /// Returns the agent's action given an environment.
-    fn action(&mut self, env: &T) -> Action;
+    fn action(&mut self, env: &T) -> Option<Action>;
 }

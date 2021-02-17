@@ -36,7 +36,7 @@ where
     }
 
     /// Returns the agent's action given an environment.
-    fn action(&mut self, env: &T) -> Action {
+    fn action(&mut self, env: &T) -> Option<Action> {
         let player_str = self.agent_id.to_string();
         let env_str = env.to_string();
 
@@ -54,7 +54,7 @@ where
         }
 
         match buf.trim().parse::<Action>() {
-            Ok(act) => act,
+            Ok(act) => Some(act),
             Err(_) => self.action(env),
         }
     }

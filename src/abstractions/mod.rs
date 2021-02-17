@@ -23,24 +23,32 @@ where
         let identity = agent_1.identity();
         if identity == env.turn() {
             let action = agent_1.action(env);
-            env.update(&action);
+            match action {
+                Some(a) => {
+                    env.update(&a);
+                    game_log.push((identity, a));
 
-            game_log.push((identity, action));
-
-            if env.is_terminal() {
-                break;
+                    if env.is_terminal() {
+                        break;
+                    }
+                }
+                None => {}
             }
         }
 
         let identity = agent_2.identity();
         if identity == env.turn() {
             let action = agent_2.action(env);
-            env.update(&action);
+            match action {
+                Some(a) => {
+                    env.update(&a);
+                    game_log.push((identity, a));
 
-            game_log.push((identity, action));
-
-            if env.is_terminal() {
-                break;
+                    if env.is_terminal() {
+                        break;
+                    }
+                }
+                None => {}
             }
         }
     }
