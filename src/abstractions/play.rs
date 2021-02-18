@@ -1,6 +1,5 @@
-
-use super::environment::Environment;
 use super::agent::Agent;
+use super::environment::Environment;
 
 // TODO: Figure out how to play with a list of players.
 // Note that players can have different types as far as they

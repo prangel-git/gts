@@ -1,5 +1,5 @@
-use games::abstractions::Environment;
 use games::abstractions::play;
+use games::abstractions::Environment;
 
 use games::agents::minmax_agent;
 

@@ -1,6 +1,8 @@
 use games::abstractions::Environment;
+
 use games::abstractions::play;
 use games::agents::human_agent;
+
 use games::tictactoe::AgentId;
 use games::tictactoe::Board;
 
