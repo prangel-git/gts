@@ -1,8 +1,8 @@
 use std::fmt::Display;
 use std::{io, str::FromStr};
 
-use super::super::abstractions::agent::Agent;
-use super::super::abstractions::environment::Environment;
+use super::super::abstractions::Agent;
+use super::super::abstractions::Environment;
 
 /// A human player. It stores the identity of the player in a given environment.
 pub struct HumanPlayer<AgentId>

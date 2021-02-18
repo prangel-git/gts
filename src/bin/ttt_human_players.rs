@@ -1,8 +1,8 @@
-use games::abstractions::environment::Environment;
-use games::abstractions::play_game_2players;
+use games::abstractions::Environment;
+use games::abstractions::play;
 use games::agents::human_agent;
-use games::tictactoe::environment::AgentId;
-use games::tictactoe::environment::Board;
+use games::tictactoe::AgentId;
+use games::tictactoe::Board;
 
 /// Plays tic tac toe with two human players.
 fn main() {
@@ -11,7 +11,7 @@ fn main() {
     let mut player_x = human_agent::HumanPlayer::new(AgentId::X);
     let mut player_o = human_agent::HumanPlayer::new(AgentId::O);
 
-    play_game_2players(&mut board, &mut player_x, &mut player_o);
+    play(&mut board, &mut player_x, &mut player_o);
 
     println!("{}", board.to_string());
 

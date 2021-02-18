@@ -1,10 +1,10 @@
 use std::collections::HashMap;
 use std::hash::Hash;
 
-use super::super::abstractions::agent::Agent;
-use super::super::abstractions::environment::Environment;
+use super::super::abstractions::Agent;
+use super::super::abstractions::Environment;
 
-use super::super::tree_search::minmax_search;
+use super::super::tree_search::minmax;
 
 /// A minmax agent will play by finding the best move found by the
 /// minmax search with a given depth and reward function.
@@ -59,7 +59,7 @@ where
             let mut best_value = f64::NEG_INFINITY;
 
             for action in actions {
-                let current_value = minmax_search(
+                let current_value = minmax(
                     &env.what_if(&action),
                     &self.agent_id,
                     self.reward,
