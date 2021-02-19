@@ -18,6 +18,8 @@ pub fn alphabeta<Action, AgentId, T>(
     agent_id: &AgentId,
     reward: &dyn Fn(&T, &AgentId) -> f64,
     depth: Dsize,
+    alpha: f64,
+    beta: f64,
     cache: &mut HashMap<(T, AgentId), Stored>,
 ) -> f64
 where
@@ -48,26 +50,46 @@ where
         cache.insert((*env, *agent_id), (value, 0));
         return value;
     } else {
-        let new_depth = depth - 1;
+        let next_depth = depth - 1;
+
         let actions = env.valid_actions();
+        let next_envs = actions.iter().map(|x| env.what_if(x)).collect::<Vec<T>>();
+
         let is_agent_turn = env.turn() == *agent_id;
 
-        let init_value = if is_agent_turn {
-            f64::NEG_INFINITY
-        } else {
-            f64::INFINITY
-        };
+        let mut value;
 
-        // For each action, performs the action, calculates the value of the new environment,
-        // and maximizes or minimizes that value depending on whether it is the turn of the player or not.
-        let value = actions
-            .iter()
-            .map(|x| env.what_if(x))
-            .map(|x| alphabeta(&x, agent_id, &reward, new_depth, cache))
-            .fold(
-                init_value,
-                |a: f64, b: f64| if is_agent_turn { a.max(b) } else { a.min(b) },
-            );
+        if is_agent_turn {
+            value = f64::NEG_INFINITY;
+            let mut next_alpha = alpha;
+
+            for next_env in next_envs {
+                let this_value = alphabeta(
+                    &next_env, agent_id, reward, next_depth, next_alpha, beta, cache,
+                );
+                value = value.max(this_value);
+                next_alpha = next_alpha.max(this_value);
+
+                if next_alpha >= beta {
+                    break;
+                }
+            }
+        } else {
+            value = f64::INFINITY;
+            let mut next_beta = alpha;
+
+            for next_env in next_envs {
+                let this_value = alphabeta(
+                    &next_env, agent_id, reward, next_depth, alpha, next_beta, cache,
+                );
+                value = value.min(this_value);
+                next_beta = next_beta.min(this_value);
+
+                if next_beta <= alpha {
+                    break;
+                }
+            }
+        };
 
         cache.insert((*env, *agent_id), (value, depth));
 
