@@ -5,6 +5,7 @@ use super::super::abstractions::Agent;
 use super::super::abstractions::Environment;
 
 use super::super::tree_search::minmax;
+use super::super::tree_search::Dsize;
 
 /// A minmax agent will play by finding the best move found by the
 /// minmax search with a given depth and reward function.
@@ -16,8 +17,8 @@ where
 {
     agent_id: AgentId,
     reward: &'a dyn Fn(&T, &AgentId) -> f64,
-    depth: u8,
-    cache: HashMap<(T, AgentId), (f64, u8)>,
+    depth: Dsize,
+    cache: HashMap<(T, AgentId), (f64, Dsize)>,
 }
 
 /// Methods for MinmaxAgent
@@ -26,7 +27,7 @@ where
     AgentId: Eq + Hash + Copy,
     T: Eq + Hash + Copy,
 {
-    pub fn new(agent_id: AgentId, reward: &'a dyn Fn(&T, &AgentId) -> f64, depth: u8) -> Self {
+    pub fn new(agent_id: AgentId, reward: &'a dyn Fn(&T, &AgentId) -> f64, depth: Dsize) -> Self {
         MinmaxAgent {
             agent_id,
             reward,

@@ -4,8 +4,8 @@ use std::collections::hash_map::Entry;
 use std::collections::HashMap;
 use std::hash::Hash;
 
-type Dsize = u8; // Depth's type.
-const DMAX: Dsize = std::u8::MAX; // Max possible depth.
+use super::Dsize;
+use super::DMAX;
 
 type Stored = (f64, Dsize);
 
