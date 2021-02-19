@@ -33,7 +33,6 @@ where
             if stored_depth >= depth {
                 return stored_value;
             } else {
-                entry.remove_entry();
             }
         }
         Entry::Vacant(_) => {}
