@@ -13,7 +13,7 @@ type Stored = (f64, Dsize);
 /// an estimate of the value. To calculate that estimate, the functions visits the tree of
 /// possible actions up to a given depth, and assumes that all visiting agents will take
 /// actions that will maximize the reward function.
-pub fn minmax<Action, AgentId, T>(
+pub fn alphabeta<Action, AgentId, T>(
     env: &T,
     agent_id: &AgentId,
     reward: &dyn Fn(&T, &AgentId) -> f64,
@@ -64,7 +64,7 @@ where
         let value = actions
             .iter()
             .map(|x| env.what_if(x))
-            .map(|x| minmax(&x, agent_id, &reward, new_depth, cache))
+            .map(|x| alphabeta(&x, agent_id, &reward, new_depth, cache))
             .fold(
                 init_value,
                 |a: f64, b: f64| if is_agent_turn { a.max(b) } else { a.min(b) },

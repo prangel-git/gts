@@ -17,7 +17,7 @@ where
     agent_id: AgentId,
     reward: &'a dyn Fn(&T, &AgentId) -> f64,
     depth: u8,
-    cache: HashMap<(T, AgentId), f64>,
+    cache: HashMap<(T, AgentId), (f64, u8)>,
 }
 
 /// Methods for MinmaxAgent
