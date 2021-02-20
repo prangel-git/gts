@@ -74,7 +74,7 @@ where
                     &next_env, agent_id, reward, next_depth, next_alpha, beta, cache,
                 );
                 value = value.max(this_value);
-                next_alpha = next_alpha.max(this_value);
+                next_alpha = next_alpha.max(value);
 
                 if next_alpha >= beta {
                     break;
@@ -82,14 +82,14 @@ where
             }
         } else {
             value = f64::INFINITY;
-            let mut next_beta = alpha;
+            let mut next_beta = beta;
 
             for next_env in next_envs {
                 let this_value = alphabeta(
                     &next_env, agent_id, reward, next_depth, alpha, next_beta, cache,
                 );
                 value = value.min(this_value);
-                next_beta = next_beta.min(this_value);
+                next_beta = next_beta.min(value);
 
                 if next_beta <= alpha {
                     break;

@@ -2,7 +2,6 @@ use games::abstractions::play;
 use games::abstractions::Environment;
 
 use games::agents::alphabeta_agent::AlphabetaAgent;
-use games::agents::human_agent;
 
 use games::tictactoe::AgentId;
 use games::tictactoe::Board;
@@ -13,7 +12,7 @@ use games::tree_search::depth_first;
 fn main() {
     let mut board = Board::initial_state();
 
-    let mut player_x = human_agent::HumanPlayer::new(AgentId::X);
+    let mut player_x = AlphabetaAgent::new(AgentId::X, &depth_first, 10);
     let mut player_o = AlphabetaAgent::new(AgentId::O, &depth_first, 10);
 
     let log = play(&mut board, &mut player_x, &mut player_o);

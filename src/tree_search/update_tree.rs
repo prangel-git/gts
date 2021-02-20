@@ -10,7 +10,7 @@ use super::Dsize;
 pub fn update_tree<Action, AgentId, T, R>(
     env: &T,
     depth: Dsize,
-    original_cache: &HashMap<T, R>,
+    original_cache: &mut HashMap<T, R>,
 ) -> HashMap<T, R>
 where
     AgentId: Eq,
@@ -18,6 +18,7 @@ where
     R: Copy,
 {
     let mut updated_cache = HashMap::new();
+
     store_tree_recursively(env, depth, original_cache, &mut updated_cache);
     return updated_cache;
 }
@@ -34,7 +35,7 @@ fn store_tree_recursively<Action, AgentId, T, R>(
     T: Environment<Action, AgentId> + Copy + Clone + Eq + Hash,
     R: Copy,
 {
-    if depth > 0 {
+    if depth > 0 && !env.is_terminal() {
         let children = env
             .valid_actions()
             .iter()
