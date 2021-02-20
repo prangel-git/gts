@@ -58,8 +58,7 @@ where
     /// Produces an action based on alphabeta-pruning search.
     fn action(&mut self, env: &T) -> Option<Action> {
         // We clear the cache so it only contains information relevant to current environment.
-        // self.cache = update_tree(env, self.depth, &mut self.cache);  // This function is being very slow.
-
+        // self.cache = update_tree(env, self.depth, &mut self.cache); // This function is being very slow.
         self.cache.clear();
 
         let actions = env.valid_actions();
@@ -85,8 +84,6 @@ where
                     best_action = action;
                 }
             }
-
-            self.cache.clear();
 
             return Some(best_action);
         }

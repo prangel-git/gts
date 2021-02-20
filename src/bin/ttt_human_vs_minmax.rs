@@ -1,8 +1,8 @@
 use games::abstractions::play;
 use games::abstractions::Environment;
 
-use games::agents::alphabeta_agent::AlphabetaAgent;
 use games::agents::human_agent;
+use games::agents::minmax_agent::MinmaxAgent;
 
 use games::tictactoe::AgentId;
 use games::tictactoe::Board;
@@ -14,7 +14,7 @@ fn main() {
     let mut board = Board::initial_state();
 
     let mut player_x = human_agent::HumanPlayer::new(AgentId::X);
-    let mut player_o = AlphabetaAgent::new(AgentId::O, &depth_first, 10);
+    let mut player_o = MinmaxAgent::new(AgentId::O, &depth_first, 10);
 
     let log = play(&mut board, &mut player_x, &mut player_o);
 

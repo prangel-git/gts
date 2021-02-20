@@ -5,20 +5,21 @@ use std::hash::Hash;
 
 use super::Dsize;
 
+// TODO: Change these functions to be efficient. They are very slow.
+
 /// Produces an updated copy of the original cache that only contains
 /// the descendantsof the environment up to a given depth.
 pub fn update_tree<Action, AgentId, T, R>(
     env: &T,
     depth: Dsize,
-    original_cache: &mut HashMap<T, R>,
+    original_cache: &HashMap<T, R>,
 ) -> HashMap<T, R>
 where
     AgentId: Eq,
     T: Environment<Action, AgentId> + Copy + Clone + Eq + Hash,
     R: Copy,
 {
-    let mut updated_cache = HashMap::new();
-
+    let mut updated_cache = HashMap::with_capacity(original_cache.capacity());
     store_tree_recursively(env, depth, original_cache, &mut updated_cache);
     return updated_cache;
 }

@@ -1,6 +1,5 @@
 use super::super::abstractions::Environment;
 
-use std::collections::hash_map::Entry;
 use std::collections::HashMap;
 use std::hash::Hash;
 
@@ -27,17 +26,14 @@ where
     T: Environment<Action, AgentId> + Copy + Clone + Eq + Hash,
 {
     // Checks whether the value is stored in the cache already.
-    match cache.entry(*env) {
-        Entry::Occupied(entry) => {
-            let (stored_value, stored_depth) = *entry.get();
-
+    match cache.get(env) {
+        Some((stored_value, stored_depth)) => {
             // Checks if the value was stored with at least the required depth.
-            if stored_depth >= depth {
-                return stored_value;
-            } else {
+            if *stored_depth >= depth {
+                return *stored_value;
             }
         }
-        Entry::Vacant(_) => {}
+        None => {}
     }
     if env.is_terminal() {
         // If the value is terminal, we store it with maximum depth (terminal values will always have the same reward)
