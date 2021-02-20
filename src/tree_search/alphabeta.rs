@@ -53,9 +53,13 @@ where
         let next_depth = depth - 1;
 
         let actions = env.valid_actions();
-        let next_envs = actions.iter().map(|x| env.what_if(x)).collect::<Vec<T>>();
-
-        // TODO: Sort the next environments depending on whether they are on the cache or not.
+        let mut next_envs = actions
+        .iter()
+        .map(|x| env.what_if(x))
+        .collect::<Vec<T>>();
+        
+        // We sort decreasingly by the score stored in the cache. 
+        next_envs.sort_by(|a, b| sort_by_score(b, a, cache));
 
         let is_agent_turn = env.turn() == *agent_id;
 
@@ -97,4 +101,30 @@ where
 
         return value;
     }
+}
+
+
+/// Sorts environments based on their score (as stored in a cache).
+/// If an environment is not in the cache, assumes a score of NEG_INFINITY.
+fn sort_by_score<T, Action, AgentId>(
+    env_1: &T, 
+    env_2: &T, 
+    cache: &HashMap<T, Stored>,
+) -> std::cmp::Ordering 
+where
+AgentId: Eq,
+T: Environment<Action, AgentId> + Eq + Hash 
+{
+    
+    let v1 = match cache.get(env_1) {
+        Some((value,_)) => { *value }
+        None => { f64::NEG_INFINITY }
+    };
+
+    let v2 = match cache.get(env_2) {
+        Some((value,_)) => { *value }
+        None => { f64::NEG_INFINITY }
+    };
+
+    return v1.partial_cmp(&v2).unwrap();
 }
