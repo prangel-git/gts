@@ -52,8 +52,11 @@ where
     } else {
         let next_depth = depth - 1;
 
-        let actions = env.valid_actions();
-        let mut next_envs = actions.iter().map(|x| env.what_if(x)).collect::<Vec<T>>();
+        let mut next_envs = env
+            .valid_actions()
+            .iter()
+            .map(|x| env.what_if(x))
+            .collect::<Vec<T>>();
 
         // We sort decreasingly by the score stored in the cache.
         next_envs.sort_by(|a, b| sort_by_score(b, a, cache));

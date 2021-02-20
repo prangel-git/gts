@@ -49,7 +49,6 @@ where
         return value;
     } else {
         let new_depth = depth - 1;
-        let actions = env.valid_actions();
         let is_agent_turn = env.turn() == *agent_id;
 
         let init_value = if is_agent_turn {
@@ -60,7 +59,8 @@ where
 
         // For each action, performs the action, calculates the value of the new environment,
         // and maximizes or minimizes that value depending on whether it is the turn of the player or not.
-        let value = actions
+        let value = env
+            .valid_actions()
             .iter()
             .map(|x| env.what_if(x))
             .map(|x| minmax(&x, agent_id, &reward, new_depth, cache))
