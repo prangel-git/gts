@@ -1,11 +1,11 @@
 use std::collections::HashMap;
 use std::hash::Hash;
 
-use super::super::abstractions::Agent;
-use super::super::abstractions::Environment;
+use crate::abstractions::Agent;
+use crate::abstractions::Environment;
 
-use super::super::tree_search::alphabeta;
-use super::super::tree_search::Dsize;
+use crate::tree_search::alphabeta;
+use crate::tree_search::Dsize;
 
 // use super::super::tree_search::update_tree;
 

@@ -1,4 +1,4 @@
-use super::super::abstractions::Environment;
+use crate::abstractions::Environment;
 
 use std::collections::HashMap;
 use std::hash::Hash;

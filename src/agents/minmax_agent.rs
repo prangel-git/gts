@@ -1,11 +1,11 @@
 use std::collections::HashMap;
 use std::hash::Hash;
 
-use super::super::abstractions::Agent;
-use super::super::abstractions::Environment;
+use crate::abstractions::Agent;
+use crate::abstractions::Environment;
 
-use super::super::tree_search::minmax;
-use super::super::tree_search::Dsize;
+use crate::tree_search::minmax;
+use crate::tree_search::Dsize;
 
 /// A minmax agent will play by finding the best move found by the
 /// minmax search with a given depth and reward function.

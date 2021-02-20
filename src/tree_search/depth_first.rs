@@ -1,4 +1,4 @@
-use super::super::abstractions::Environment;
+use crate::abstractions::Environment;
 
 /// Calculates the reward by going all the way down the environment tree.
 pub fn depth_first<Action, AgentId, T>(env: &T, agent: &AgentId) -> f64
