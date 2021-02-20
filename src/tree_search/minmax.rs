@@ -18,14 +18,14 @@ pub fn minmax<Action, AgentId, T>(
     agent_id: &AgentId,
     reward: &dyn Fn(&T, &AgentId) -> f64,
     depth: Dsize,
-    cache: &mut HashMap<(T, AgentId), Stored>,
+    cache: &mut HashMap<T, Stored>,
 ) -> f64
 where
-    AgentId: Eq + Hash + Copy,
+    AgentId: Eq,
     T: Environment<Action, AgentId> + Copy + Clone + Eq + Hash,
 {
     // Checks whether the value is stored in the cache already.
-    match cache.entry((*env, *agent_id)) {
+    match cache.entry(*env) {
         Entry::Occupied(entry) => {
             let (stored_value, stored_depth) = *entry.get();
 
@@ -40,12 +40,12 @@ where
     if env.is_terminal() {
         // If the value is terminal, we store it with maximum depth (terminal values will always have the same reward)
         let value = reward(env, agent_id);
-        cache.insert((*env, *agent_id), (value, DMAX));
+        cache.insert(*env, (value, DMAX));
         return value;
     } else if depth == 0 {
         // When we reach depth 0, we store the reward.
         let value = reward(env, agent_id);
-        cache.insert((*env, *agent_id), (value, 0));
+        cache.insert(*env, (value, 0));
         return value;
     } else {
         let new_depth = depth - 1;
@@ -69,7 +69,7 @@ where
                 |a: f64, b: f64| if is_agent_turn { a.max(b) } else { a.min(b) },
             );
 
-        cache.insert((*env, *agent_id), (value, depth));
+        cache.insert(*env, (value, depth));
 
         return value;
     }

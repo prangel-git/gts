@@ -23,10 +23,11 @@ fn minmax_sanity_check() {
     assert_eq!(1, value_x as i16);
     assert_eq!(-1, value_o as i16);
 
-    let mut cache = HashMap::new();
+    let mut cache_x = HashMap::new();
+    let mut cache_y = HashMap::new();
 
-    let value_x = minmax(&board, &id_x, &depth_first, 1, &mut cache);
-    let value_o = minmax(&board, &id_o, &depth_first, 3, &mut cache);
+    let value_x = minmax(&board, &id_x, &depth_first, 1, &mut cache_x);
+    let value_o = minmax(&board, &id_o, &depth_first, 3, &mut cache_y);
 
     assert_eq!(1, value_x as i16);
     assert_eq!(-1, value_o as i16);

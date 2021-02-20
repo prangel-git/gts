@@ -20,14 +20,14 @@ pub fn alphabeta<Action, AgentId, T>(
     depth: Dsize,
     alpha: f64,
     beta: f64,
-    cache: &mut HashMap<(T, AgentId), Stored>,
+    cache: &mut HashMap<T, Stored>,
 ) -> f64
 where
-    AgentId: Eq + Hash + Copy,
+    AgentId: Eq,
     T: Environment<Action, AgentId> + Copy + Clone + Eq + Hash,
 {
     // Checks whether the value is stored in the cache already.
-    match cache.entry((*env, *agent_id)) {
+    match cache.entry(*env) {
         Entry::Occupied(entry) => {
             let (stored_value, stored_depth) = *entry.get();
 
@@ -42,18 +42,20 @@ where
     if env.is_terminal() {
         // If the value is terminal, we store it with maximum depth (terminal values will always have the same reward)
         let value = reward(env, agent_id);
-        cache.insert((*env, *agent_id), (value, DMAX));
+        cache.insert(*env, (value, DMAX));
         return value;
     } else if depth == 0 {
         // When we reach depth 0, we store the reward.
         let value = reward(env, agent_id);
-        cache.insert((*env, *agent_id), (value, 0));
+        cache.insert(*env, (value, 0));
         return value;
     } else {
         let next_depth = depth - 1;
 
         let actions = env.valid_actions();
         let next_envs = actions.iter().map(|x| env.what_if(x)).collect::<Vec<T>>();
+
+        // TODO: Sort the next environments depending on whether they are on the cache or not.
 
         let is_agent_turn = env.turn() == *agent_id;
 
@@ -91,7 +93,7 @@ where
             }
         };
 
-        cache.insert((*env, *agent_id), (value, depth));
+        cache.insert(*env, (value, depth));
 
         return value;
     }

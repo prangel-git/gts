@@ -12,19 +12,19 @@ use super::super::tree_search::Dsize;
 /// The agent caches moves previously seen
 pub struct MinmaxAgent<'a, AgentId, T>
 where
-    AgentId: Eq + Hash + Copy,
+    AgentId: Eq,
     T: Eq + Hash + Copy,
 {
     agent_id: AgentId,
     reward: &'a dyn Fn(&T, &AgentId) -> f64,
     depth: Dsize,
-    cache: HashMap<(T, AgentId), (f64, Dsize)>,
+    cache: HashMap<T, (f64, Dsize)>,
 }
 
 /// Methods for MinmaxAgent
 impl<'a, AgentId, T> MinmaxAgent<'a, AgentId, T>
 where
-    AgentId: Eq + Hash + Copy,
+    AgentId: Eq,
     T: Eq + Hash + Copy,
 {
     pub fn new(agent_id: AgentId, reward: &'a dyn Fn(&T, &AgentId) -> f64, depth: Dsize) -> Self {
@@ -40,7 +40,7 @@ where
 /// Implements an agent that runs the minmax tree search arlgorithm to produce moves.
 impl<'a, Action, AgentId, T> Agent<Action, AgentId, T> for MinmaxAgent<'a, AgentId, T>
 where
-    AgentId: Eq + Hash + Copy,
+    AgentId: Eq + Copy,
     Action: Copy,
     T: Environment<Action, AgentId> + Eq + Hash + Copy,
 {

@@ -23,7 +23,7 @@ impl fmt::Display for AgentId {
 pub type Action = u8;
 
 /// Representation of the tic tac toe board
-#[derive(Debug, Clone, Copy, Hash, Eq, PartialEq)]
+#[derive(Debug, Clone, Copy, Eq, PartialEq, Hash)]
 pub struct Board {
     moves_x: u16,  // As a binary string. Puts a 1 in the positions where X moved
     moves_o: u16,  // As a binary string. Puts a 1 in the positions where Y moved
