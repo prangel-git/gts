@@ -8,7 +8,7 @@ use super::add_value;
 use super::Stored;
 
 /// Runs montecarlo tree search in an environment.
-/// The number of wins and loses at that node is stored in the cache. 
+/// The number of wins and loses at that node is stored in the cache.
 /// The selection function pics an action based on the currently cached values.
 pub fn mcts<Action, AgentId, T>(
     env: &T,

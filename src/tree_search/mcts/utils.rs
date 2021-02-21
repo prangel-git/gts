@@ -1,10 +1,8 @@
 use crate::abstractions::Environment;
 
-
 use std::{collections::HashMap, hash::Hash};
 
 use super::Stored;
-
 
 // Read a value from the cache. It fills with zeroes when the value is not in the cache.
 pub fn read_cache<Action, AgentId, T>(env: &T, cache: &HashMap<T, Stored>) -> Stored
