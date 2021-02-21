@@ -8,7 +8,7 @@ use games::tictactoe::Board;
 
 use games::tree_search::depth_first;
 
-/// Plays tic tac toe with a human player vs minmax player
+/// Alpha-beta prunning vs alphabeta pruning playing tic tac toe.
 fn main() {
     let mut board = Board::initial_state();
 

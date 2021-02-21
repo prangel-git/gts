@@ -1,20 +1,22 @@
 use games::abstractions::play;
 use games::abstractions::Environment;
 
-use games::agents::minmax_agent;
+use games::agents::alphabeta_agent::AlphabetaAgent;
+use games::agents::mcts_utc_agent::MctsUctAgent;
 
 use games::tictactoe::AgentId;
 use games::tictactoe::Board;
 
 use games::tree_search::depth_first;
-use minmax_agent::MinmaxAgent;
 
-/// Plays tic tac toe with a minmax player vs minmax player
+/// Alpha-beta prunning vs mcts playing tic tac toe.
 fn main() {
     let mut board = Board::initial_state();
 
-    let mut player_x = MinmaxAgent::new(AgentId::X, &depth_first, 10);
-    let mut player_o = MinmaxAgent::new(AgentId::O, &depth_first, 10);
+    let exploration = 2f64.sqrt();
+
+    let mut player_x = MctsUctAgent::new(AgentId::X, exploration, 1000);
+    let mut player_o = AlphabetaAgent::new(AgentId::O, &depth_first, 10);
 
     let log = play(&mut board, &mut player_x, &mut player_o);
 
