@@ -8,9 +8,9 @@ use crate::tree_search::mcts;
 use crate::tree_search::uct;
 
 /// Implements a montecarlo tree search in which the next move is piced using the
-/// upper confidence bound criteria. 
-/// 
-/// 'exploration' controls the trade-off between exploration and exploitation. 
+/// upper confidence bound criteria.
+///
+/// 'exploration' controls the trade-off between exploration and exploitation.
 /// 'mc_runs' is the number of montacarlo runs in each position.
 pub struct MctsUctAgent<AgentId, T>
 where
@@ -27,14 +27,10 @@ where
 impl<AgentId, T> MctsUctAgent<AgentId, T>
 where
     AgentId: Eq + Copy,
-    T:  Eq + Hash + Copy,
+    T: Eq + Hash + Copy,
 {
     /// creates a new montecarlo tree search agent.
-    pub fn new(
-        agent_id: AgentId, 
-        exploration: f64,
-        mc_runs: u16,
-    ) -> Self {
+    pub fn new(agent_id: AgentId, exploration: f64, mc_runs: u16) -> Self {
         MctsUctAgent {
             agent_id,
             exploration,
@@ -44,21 +40,18 @@ where
     }
 
     /// Updates the believe tree begining at the position given by env.
-    fn learn<Action>(
-        &mut self, 
-        env: &T
-    ) 
-    where 
-        Action: Copy, 
-        T: Environment<Action, AgentId>
+    fn learn<Action>(&mut self, env: &T)
+    where
+        Action: Copy,
+        T: Environment<Action, AgentId>,
     {
         let agent_id = self.agent_id;
         let exploration = self.exploration;
         mcts(
-            env, 
-            &agent_id, 
-            &|e, a, c| uct(e, a, c, exploration), 
-            &mut self.cache
+            env,
+            &agent_id,
+            &|e, a, c| uct(e, a, c, exploration),
+            &mut self.cache,
         );
     }
 }
@@ -78,11 +71,11 @@ where
     /// Produces an action based with mcts using the ucb selection method.
     fn action(&mut self, env: &T) -> Option<Action> {
         let actions = env.valid_actions();
-        
-        if actions.is_empty() { 
+
+        if actions.is_empty() {
             return None;
         } else if actions.len() == 1 {
-            return Some(actions[0])
+            return Some(actions[0]);
         } else {
             for _ in 0..self.mc_runs {
                 self.learn(env);
