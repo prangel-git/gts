@@ -4,6 +4,7 @@ use std::hash::Hash;
 use crate::abstractions::Environment;
 
 use super::add_value;
+use super::find_terminal_value;
 
 use super::Stored;
 
@@ -20,24 +21,15 @@ where
     AgentId: Eq,
     T: Environment<Action, AgentId> + Copy + Eq + Hash,
 {
-    match selection_fn(env, agent_id, cache) {
+    let value = match selection_fn(env, agent_id, cache) {
         Some(action) => {
             let next_env = env.what_if(&action);
-            return mcts(&next_env, agent_id, selection_fn, cache);
+            mcts(&next_env, agent_id, selection_fn, cache)
         }
-        None => {
-            let value = match env.winner() {
-                Some(a) => {
-                    if a == *agent_id {
-                        (1, 0)
-                    } else {
-                        (0, 1)
-                    }
-                }
-                None => (1, 1),
-            };
-            add_value(env, &value, cache);
-            return value;
-        }
-    }
+        None => find_terminal_value(env, agent_id),
+    };
+
+    add_value(env, &value, cache);
+
+    return value;
 }

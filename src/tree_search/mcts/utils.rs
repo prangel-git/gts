@@ -4,7 +4,7 @@ use std::{collections::HashMap, hash::Hash};
 
 use super::Stored;
 
-// Read a value from the cache. It fills with zeroes when the value is not in the cache.
+/// Read a value from the cache. It fills with zeroes when the value is not in the cache.
 pub fn read_cache<Action, AgentId, T>(env: &T, cache: &HashMap<T, Stored>) -> Stored
 where
     AgentId: Eq,
@@ -16,7 +16,7 @@ where
     }
 }
 
-// Adds a value to the value currently in the cache.
+/// Adds a value to the value currently in the cache.
 pub fn add_value<Action, AgentId, T>(env: &T, (v_1, v_2): &Stored, cache: &mut HashMap<T, Stored>)
 where
     AgentId: Eq,
@@ -28,4 +28,22 @@ where
     loses += v_2;
 
     cache.insert(*env, (wins, loses));
+}
+
+/// Finds the value for a terminal action.
+pub fn find_terminal_value<Action, AgentId, T>(env: &T, agent_id: &AgentId) -> Stored
+where
+    AgentId: Eq,
+    T: Environment<Action, AgentId>,
+{
+    match env.winner() {
+        Some(a) => {
+            if a == *agent_id {
+                (1, 0)
+            } else {
+                (0, 1)
+            }
+        }
+        None => (1, 1),
+    }
 }
