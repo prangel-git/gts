@@ -72,7 +72,12 @@ where
 }
 
 fn uct_score(wins: u32, loses: u32, exploration_numerator: f64) -> f64 {
-    let n_i = (wins + loses) as f64;
-    let score = (wins as f64 / n_i) + exploration_numerator / n_i.sqrt();
-    return score;
+    let n = wins + loses;
+    if n == 0 {
+        return exploration_numerator;
+    } else {
+        let n = n as f64;
+        let score = (wins as f64 / n) + exploration_numerator / n.sqrt();
+        return score;
+    }
 }

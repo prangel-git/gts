@@ -77,6 +77,8 @@ where
         } else if actions.len() == 1 {
             return Some(actions[0]);
         } else {
+            self.cache.clear();
+
             for _ in 0..self.mc_runs {
                 self.learn(env);
             }
