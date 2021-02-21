@@ -21,7 +21,7 @@ where
 {
     let actions = env.valid_actions();
 
-    if actions.is_empty() {
+    if actions.is_empty() | env.is_terminal() {
         return None;
     } else {
         let init_action = actions[0];
