@@ -6,7 +6,7 @@ use std::hash::Hash;
 use super::Dsize;
 use super::DMAX;
 
-type Stored<Action> = (f64, Dsize, Option<Action>);
+type Stored<Action> = (f64, Option<Action>, Dsize);
 
 /// Given a reward function, an agent identifier, and an environment, this function returns
 /// an estimate of the value. To calculate that estimate, the functions visits the tree of
@@ -20,7 +20,7 @@ pub fn alphabeta<Action, AgentId, T>(
     alpha: f64,
     beta: f64,
     cache: &mut HashMap<T, Stored<Action>>,
-) -> Stored<Action>
+) -> (f64, Option<Action>)
 where
     Action: Copy,
     AgentId: Eq,
@@ -28,24 +28,24 @@ where
 {
     // Checks whether the value is stored in the cache already.
     match cache.get(env) {
-        Some(stored_value) => {
+        Some((stored_value, stored_action, stored_depth)) => {
             // Checks if the value was stored with at least the required depth.
-            if stored_value.1 >= depth {
-                return *stored_value;
+            if *stored_depth >= depth {
+                return (*stored_value, *stored_action);
             }
         }
         None => {}
     }
     if env.is_terminal() {
         // If the value is terminal, we store it with maximum depth (terminal values will always have the same reward)
-        let value = (reward(env, agent_id), DMAX, None);
-        cache.insert(*env, value);
-        return value;
+        let stored_value = reward(env, agent_id);
+        cache.insert(*env, (stored_value, None, DMAX));
+        return (stored_value, None);
     } else if depth == 0 {
         // When we reach depth 0, we store the reward.
-        let value = (reward(env, agent_id), 0, None);
-        cache.insert(*env, value);
-        return value;
+        let stored_value = reward(env, agent_id);
+        cache.insert(*env, (stored_value, None, 0));
+        return (stored_value, None);
     } else {
         let next_depth = depth - 1;
 
@@ -69,7 +69,7 @@ where
             let mut next_alpha = alpha;
 
             for (a, next_env) in next_envs {
-                let (this_value, _, _) = alphabeta(
+                let (this_value, _) = alphabeta(
                     &next_env, agent_id, reward, next_depth, next_alpha, beta, cache,
                 );
 
@@ -88,7 +88,7 @@ where
             let mut next_beta = beta;
 
             for (a, next_env) in next_envs {
-                let (this_value, _, _) = alphabeta(
+                let (this_value, _) = alphabeta(
                     &next_env, agent_id, reward, next_depth, alpha, next_beta, cache,
                 );
 
@@ -106,11 +106,9 @@ where
             }
         };
 
-        let stored = (value, depth, action);
+        cache.insert(*env, (value, action, depth));
 
-        cache.insert(*env, stored);
-
-        return stored;
+        return (value, action);
     }
 }
 

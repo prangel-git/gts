@@ -24,7 +24,7 @@ where
     agent_id: AgentId,
     reward: &'a dyn Fn(&T, &AgentId) -> f64,
     depth: Dsize,
-    cache: HashMap<T, (f64, Dsize, Option<Action>)>,
+    cache: HashMap<T, (f64, Option<Action>, Dsize)>,
 }
 
 /// Methods for Alphabeta
@@ -61,7 +61,7 @@ where
         // self.cache = update_tree(env, self.depth, &mut self.cache); // This function is being very slow.
         self.cache.clear();
 
-        let (_, _, a) = alphabeta(
+        let (_, a) = alphabeta(
             env,
             &self.agent_id,
             self.reward,

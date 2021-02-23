@@ -18,7 +18,7 @@ where
     agent_id: AgentId,
     reward: &'a dyn Fn(&T, &AgentId) -> f64,
     depth: Dsize,
-    cache: HashMap<T, (f64, Dsize, Option<Action>)>,
+    cache: HashMap<T, (f64, Option<Action>, Dsize)>,
 }
 
 /// Methods for MinmaxAgent
@@ -53,7 +53,7 @@ where
     fn action(&mut self, env: &T) -> Option<Action> {
         self.cache.clear();
 
-        let (_, _, a) = minmax(
+        let (_, a) = minmax(
             env,
             &self.agent_id,
             self.reward,
