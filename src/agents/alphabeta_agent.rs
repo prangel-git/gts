@@ -16,7 +16,7 @@ use crate::tree_search::Dsize;
 /// An agent that will play by finding the best move found by the
 /// alphabeta-prunning search with a given depth and reward function.
 /// The agent caches moves previously seen
-pub struct AlphabetaAgent<'a, AgentId, T>
+pub struct AlphabetaAgent<'a, Action, AgentId, T>
 where
     AgentId: Eq,
     T: Eq + Hash + Copy,
@@ -24,11 +24,11 @@ where
     agent_id: AgentId,
     reward: &'a dyn Fn(&T, &AgentId) -> f64,
     depth: Dsize,
-    cache: HashMap<T, (f64, Dsize)>,
+    cache: HashMap<T, (f64, Dsize, Option<Action>)>,
 }
 
 /// Methods for Alphabeta
-impl<'a, AgentId, T> AlphabetaAgent<'a, AgentId, T>
+impl<'a, Action, AgentId, T> AlphabetaAgent<'a, Action, AgentId, T>
 where
     AgentId: Eq,
     T: Eq + Hash + Copy,
@@ -37,14 +37,14 @@ where
         AlphabetaAgent {
             agent_id,
             reward,
-            depth,
+            depth: depth + 1, // Preventing depth = 0. Alphabeta will always return None in that case.
             cache: HashMap::new(),
         }
     }
 }
 
 /// Implements an agent that runs alphabeta prunning tree search arlgorithm to produce moves.
-impl<'a, Action, AgentId, T> Agent<Action, AgentId, T> for AlphabetaAgent<'a, AgentId, T>
+impl<'a, Action, AgentId, T> Agent<Action, AgentId, T> for AlphabetaAgent<'a, Action, AgentId, T>
 where
     AgentId: Eq + Copy,
     Action: Copy,
@@ -61,31 +61,16 @@ where
         // self.cache = update_tree(env, self.depth, &mut self.cache); // This function is being very slow.
         self.cache.clear();
 
-        let actions = env.valid_actions();
+        let (_, _, a) = alphabeta(
+            env,
+            &self.agent_id,
+            self.reward,
+            self.depth,
+            f64::NEG_INFINITY,
+            f64::INFINITY,
+            &mut self.cache,
+        );
 
-        if actions.is_empty() {
-            return None;
-        } else {
-            let mut best_action = actions[0];
-            let mut best_value = f64::NEG_INFINITY;
-
-            for action in actions {
-                let current_value = alphabeta(
-                    &env.what_if(&action),
-                    &self.agent_id,
-                    self.reward,
-                    self.depth,
-                    f64::NEG_INFINITY,
-                    f64::INFINITY,
-                    &mut self.cache,
-                );
-                if current_value > best_value {
-                    best_value = current_value;
-                    best_action = action;
-                }
-            }
-
-            return Some(best_action);
-        }
+        return a;
     }
 }

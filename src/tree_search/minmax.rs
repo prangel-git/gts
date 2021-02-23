@@ -56,7 +56,7 @@ where
                 .map(|a| (a, env.what_if(a)))
                 .map(|(a, env)| (a, minmax(&env, agent_id, &reward, new_depth, cache)))
                 .fold(init_value, |a, (act, b)| {
-                    if a.0 > b.0 {
+                    if a.0 >= b.0 {
                         a
                     } else {
                         (b.0, b.1, Some(*act))
@@ -70,7 +70,7 @@ where
                 .map(|a| (a, env.what_if(a)))
                 .map(|(a, env)| (a, minmax(&env, agent_id, &reward, new_depth, cache)))
                 .fold(init_value, |a, (act, b)| {
-                    if a.0 < b.0 {
+                    if a.0 <= b.0 {
                         a
                     } else {
                         (b.0, b.1, Some(*act))
