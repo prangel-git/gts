@@ -10,7 +10,7 @@ use crate::tree_search::Dsize;
 /// A minmax agent will play by finding the best move found by the
 /// minmax search with a given depth and reward function.
 /// The agent caches moves previously seen
-pub struct MinmaxAgent<'a, AgentId, T>
+pub struct MinmaxAgent<'a, Action, AgentId, T>
 where
     AgentId: Eq,
     T: Eq + Hash + Copy,
@@ -18,11 +18,11 @@ where
     agent_id: AgentId,
     reward: &'a dyn Fn(&T, &AgentId) -> f64,
     depth: Dsize,
-    cache: HashMap<T, (f64, Dsize)>,
+    cache: HashMap<T, (f64, Dsize, Option<Action>)>,
 }
 
 /// Methods for MinmaxAgent
-impl<'a, AgentId, T> MinmaxAgent<'a, AgentId, T>
+impl<'a, Action, AgentId, T> MinmaxAgent<'a, Action, AgentId, T>
 where
     AgentId: Eq,
     T: Eq + Hash + Copy,
@@ -31,14 +31,14 @@ where
         MinmaxAgent {
             agent_id,
             reward,
-            depth,
+            depth: depth + 1,       // Avoiding depth 0. With depth 0, minmax always returns None.
             cache: HashMap::new(),
         }
     }
 }
 
 /// Implements an agent that runs the minmax tree search arlgorithm to produce moves.
-impl<'a, Action, AgentId, T> Agent<Action, AgentId, T> for MinmaxAgent<'a, AgentId, T>
+impl<'a, Action, AgentId, T> Agent<Action, AgentId, T> for MinmaxAgent<'a, Action, AgentId, T>
 where
     AgentId: Eq + Copy,
     Action: Copy,
@@ -51,30 +51,16 @@ where
 
     /// Produces an action based on minmax search.
     fn action(&mut self, env: &T) -> Option<Action> {
-        let actions = env.valid_actions();
 
-        if actions.is_empty() {
-            return None;
-        } else {
-            let mut best_action = actions[0];
-            let mut best_value = f64::NEG_INFINITY;
-
-            for action in actions {
-                let current_value = minmax(
-                    &env.what_if(&action),
-                    &self.agent_id,
-                    self.reward,
-                    self.depth,
-                    &mut self.cache,
-                );
-                if current_value > best_value {
-                    best_value = current_value;
-                    best_action = action;
-                }
-            }
-            self.cache.clear();
-
-            return Some(best_action);
-        }
+        self.cache.clear();
+        
+        let (_, _, a) = minmax(
+            env,
+            &self.agent_id,
+            self.reward,
+            self.depth,
+            &mut self.cache,
+        );
+        return a;
     }
 }
