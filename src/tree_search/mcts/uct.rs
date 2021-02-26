@@ -39,26 +39,37 @@ where
 
         let is_agent_turn = *agent_id == env.turn();
 
-        let max_or_min = if is_agent_turn { 1f64 } else { -1f64 };
-
-        let (best_action, _) = action_score_visits
-            .iter()
-            .map(|(a, (score, visits))| {
-                (
-                    a,
-                    uct_score((*score) * max_or_min, *visits, exploration_numerator),
+        let (best_action, _) = if is_agent_turn {
+            action_score_visits
+                .iter()
+                .map(|(a, (score, visits))| (a, uct_score(*score, *visits, exploration_numerator)))
+                .fold(
+                    (init_action, f64::NEG_INFINITY),
+                    |(act_0, score_0), (act_1, score_1)| {
+                        if score_0 < score_1 {
+                            (*act_1, score_1)
+                        } else {
+                            (act_0, score_0)
+                        }
+                    },
                 )
-            })
-            .fold(
-                (init_action, f64::NEG_INFINITY),
-                |(act_0, score_0), (act_1, score_1)| {
-                    if score_0 < score_1 {
-                        (*act_1, score_1)
-                    } else {
-                        (act_0, score_0)
-                    }
-                },
-            );
+        } else {
+            action_score_visits
+                .iter()
+                .map(|(a, (score, visits))| {
+                    (a, uct_score(-(*score), *visits, exploration_numerator))
+                })
+                .fold(
+                    (init_action, f64::NEG_INFINITY),
+                    |(act_0, score_0), (act_1, score_1)| {
+                        if score_0 < score_1 {
+                            (*act_1, score_1)
+                        } else {
+                            (act_0, score_0)
+                        }
+                    },
+                )
+        };
 
         return Some(best_action);
     }
