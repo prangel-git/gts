@@ -9,4 +9,4 @@ use self::utils::add_value;
 use self::utils::find_terminal_value;
 use self::utils::read_cache;
 
-type Stored = (u32, u32);
+type Stored = (f64, u32);

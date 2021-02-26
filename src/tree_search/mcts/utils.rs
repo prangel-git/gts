@@ -11,23 +11,26 @@ where
     T: Environment<Action, AgentId> + Copy + Eq + Hash,
 {
     match cache.get(env) {
-        Some((w, l)) => (*w, *l),
-        None => (0, 0),
+        Some((score, visits)) => (*score, *visits),
+        None => (0f64, 0u32),
     }
 }
 
 /// Adds a value to the value currently in the cache.
-pub fn add_value<Action, AgentId, T>(env: &T, (v_1, v_2): &Stored, cache: &mut HashMap<T, Stored>)
-where
+pub fn add_value<Action, AgentId, T>(
+    env: &T,
+    (this_score, this_visits): &Stored,
+    cache: &mut HashMap<T, Stored>,
+) where
     AgentId: Eq,
     T: Environment<Action, AgentId> + Copy + Eq + Hash,
 {
-    let (mut wins, mut loses) = read_cache(env, cache);
+    let (mut score, mut visits) = read_cache(env, cache);
 
-    wins += v_1;
-    loses += v_2;
+    score += this_score;
+    visits += this_visits;
 
-    cache.insert(*env, (wins, loses));
+    cache.insert(*env, (score, visits));
 }
 
 /// Finds the value for a terminal action.
@@ -39,11 +42,11 @@ where
     match env.winner() {
         Some(a) => {
             if a == *agent_id {
-                (1, 0)
+                (1f64, 1)
             } else {
-                (0, 1)
+                (-1f64, 1)
             }
         }
-        None => (1, 1),
+        None => (0f64, 1),
     }
 }

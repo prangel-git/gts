@@ -20,7 +20,7 @@ where
     agent_id: AgentId,
     exploration: f64,
     mc_runs: u16,
-    cache: HashMap<T, (u32, u32)>,
+    cache: HashMap<T, (f64, u32)>,
 }
 
 /// Methods for MctsUctAgent
