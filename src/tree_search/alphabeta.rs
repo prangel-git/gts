@@ -75,9 +75,9 @@ where
 
                 if this_value > value {
                     value = this_value;
+                    next_alpha = value;
                     action = Some(a);
                 }
-                next_alpha = next_alpha.max(value);
 
                 if next_alpha >= beta {
                     break;
@@ -94,11 +94,9 @@ where
 
                 if this_value < value {
                     value = this_value;
+                    next_beta = value;
                     action = Some(a);
                 }
-
-                value = value.min(this_value);
-                next_beta = next_beta.min(value);
 
                 if next_beta <= alpha {
                     break;
