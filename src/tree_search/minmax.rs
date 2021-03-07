@@ -1,5 +1,6 @@
 use crate::abstractions::Environment;
 
+use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::hash::Hash;
 
@@ -48,42 +49,35 @@ where
         let new_depth = depth - 1;
         let is_agent_turn = env.turn() == *agent_id;
 
-        let value = if is_agent_turn {
-            let init_value = (f64::NEG_INFINITY, None);
+        let action_value = env
+            .valid_actions()
+            .map(|a| {
+                let (score, _) = minmax(&env.what_if(&a), agent_id, &reward, new_depth, cache);
+                (score, a)
+            })
+            .max_by(|(score0, _), (score1, _)| {
+                let direction = if is_agent_turn {
+                    score0 < score1
+                } else {
+                    score0 > score1
+                };
+                if direction {
+                    Ordering::Less
+                } else if score0 == score1 {
+                    Ordering::Equal
+                } else {
+                    Ordering::Greater
+                }
+            });
 
-            env.valid_actions()
-                .map(|a| (a, env.what_if(&a)))
-                .map(|(a, env)| (a, minmax(&env, agent_id, &reward, new_depth, cache)))
-                .fold(
-                    init_value,
-                    |a, (act, b)| {
-                        if a.0 >= b.0 {
-                            a
-                        } else {
-                            (b.0, Some(act))
-                        }
-                    },
-                )
-        } else {
-            let init_value = (f64::INFINITY, None);
-
-            env.valid_actions()
-                .map(|a| (a, env.what_if(&a)))
-                .map(|(a, env)| (a, minmax(&env, agent_id, &reward, new_depth, cache)))
-                .fold(
-                    init_value,
-                    |a, (act, b)| {
-                        if a.0 <= b.0 {
-                            a
-                        } else {
-                            (b.0, Some(act))
-                        }
-                    },
-                )
-        };
-
-        cache.insert(*env, (value.0, value.1, depth));
-
-        return value;
+        match action_value {
+            Some((value, action)) => {
+                cache.insert(*env, (value, Some(action), depth));
+                return (value, Some(action));
+            }
+            None => {
+                return (f64::NEG_INFINITY, None);
+            }
+        }
     }
 }

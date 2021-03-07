@@ -1,6 +1,6 @@
-use std::hash::Hash;
 use std::cmp::Ordering;
 use std::collections::HashMap;
+use std::hash::Hash;
 
 use crate::abstractions::Environment;
 
@@ -24,18 +24,27 @@ where
 
     let exploration_numerator = exploration * ((total_visits + 1) as f64).ln().sqrt();
 
-    let invert_score = if *agent_id == env.turn() {1.0f64} else {-1.0f64};
+    let invert_score = if *agent_id == env.turn() {
+        1.0f64
+    } else {
+        -1.0f64
+    };
 
     let best_action = env
         .valid_actions()
         .map(|x| (x, read_cache(&env.what_if(&x), cache)))
-        .map(|(x, (score, visits))| (x, uct_score(invert_score * score, visits, exploration_numerator)))
+        .map(|(x, (score, visits))| {
+            (
+                x,
+                uct_score(invert_score * score, visits, exploration_numerator),
+            )
+        })
         .max_by(|(_, score0), (_, score1)| {
             if score0 < score1 {
                 Ordering::Less
             } else if score0 == score1 {
                 Ordering::Equal
-            }else {
+            } else {
                 Ordering::Greater
             }
         });
