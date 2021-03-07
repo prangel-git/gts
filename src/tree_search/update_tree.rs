@@ -36,8 +36,7 @@ where
     } else {
         let children = env
             .valid_actions()
-            .iter()
-            .map(|a| env.what_if(a))
+            .map(|a| env.what_if(&a))
             .collect::<Vec<_>>();
 
         for child in children {

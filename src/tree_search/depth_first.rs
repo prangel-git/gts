@@ -30,8 +30,7 @@ where
         // For each action, performs the action, calculates the value of the new environment,
         // and maximizes or minimizes that value depending on whether it is the turn of the player or not.
         let next_env = actions
-            .iter()
-            .map(|x| env.what_if(x))
+            .map(|x| env.what_if(&x))
             .map(|x| depth_first(&x, agent))
             .fold(
                 init_value,

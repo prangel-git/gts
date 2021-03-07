@@ -61,8 +61,53 @@ impl fmt::Display for Board {
     }
 }
 
+/// Struct to represent current occupied elements in a board after a given action
+pub struct NextAction {
+    board_state: u16, // As a binary string. Puts a 1 in the occupied possitions (starting at current)
+    current: Action,
+}
+
+/// Implements occupied
+impl NextAction {
+    /// Initializes structure based on a given board.
+    fn new(board: &Board) -> Self {
+        let board_state = board.moves_o | board.moves_x;
+        let current = 0;
+        NextAction {
+            board_state,
+            current,
+        }
+    }
+}
+
+/// Implements iterator for next action
+impl Iterator for NextAction {
+    type Item = Action;
+
+    /// Define sequence to iterate
+    fn next(&mut self) -> Option<Self::Item> {
+        while self.board_state & 1 == 1 {
+            self.board_state = self.board_state >> 1;
+            self.current += 1;
+        }
+
+        let output = if self.current > 8 {
+            None
+        } else {
+            Some(self.current)
+        };
+
+        self.board_state = self.board_state >> 1;
+        self.current += 1;
+
+        return output;
+    }
+}
+
 /// Implementation of environment for tic tac toe board.
 impl Environment<Action, AgentId> for Board {
+    type ActionIter = NextAction;
+
     /// Initializes an empty tic tac toe board.
     fn initial_state() -> Self {
         Board {
@@ -98,16 +143,9 @@ impl Environment<Action, AgentId> for Board {
     }
 
     /// Produces a list of valid actions in the current board.
-    fn valid_actions(&self) -> Vec<Action> {
-        let mut actions: Vec<Action> = Vec::new();
-
-        for a in 0..9 {
-            if self.is_valid(&a) {
-                actions.push(a);
-            } else {
-            }
-        }
-        return actions;
+    fn valid_actions(&self) -> Self::ActionIter {
+        let next_action = NextAction::new(self);
+        return next_action;
     }
 
     /// Returns true iff the action 'a' is valid in the current board.

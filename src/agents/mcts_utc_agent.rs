@@ -70,20 +70,12 @@ where
 
     /// Produces an action based with mcts using the ucb selection method.
     fn action(&mut self, env: &T) -> Option<Action> {
-        let actions = env.valid_actions();
+        self.cache.clear();
 
-        if actions.is_empty() {
-            return None;
-        } else if actions.len() == 1 {
-            return Some(actions[0]);
-        } else {
-            self.cache.clear();
-
-            for _ in 0..self.mc_runs {
-                self.learn(env);
-            }
-
-            return uct(env, &self.agent_id, &self.cache, self.exploration);
+        for _ in 0..self.mc_runs {
+            self.learn(env);
         }
+
+        return uct(env, &self.agent_id, &self.cache, self.exploration);
     }
 }

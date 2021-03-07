@@ -52,8 +52,7 @@ where
             let init_value = (f64::NEG_INFINITY, None);
 
             env.valid_actions()
-                .iter()
-                .map(|a| (a, env.what_if(a)))
+                .map(|a| (a, env.what_if(&a)))
                 .map(|(a, env)| (a, minmax(&env, agent_id, &reward, new_depth, cache)))
                 .fold(
                     init_value,
@@ -61,7 +60,7 @@ where
                         if a.0 >= b.0 {
                             a
                         } else {
-                            (b.0, Some(*act))
+                            (b.0, Some(act))
                         }
                     },
                 )
@@ -69,8 +68,7 @@ where
             let init_value = (f64::INFINITY, None);
 
             env.valid_actions()
-                .iter()
-                .map(|a| (a, env.what_if(a)))
+                .map(|a| (a, env.what_if(&a)))
                 .map(|(a, env)| (a, minmax(&env, agent_id, &reward, new_depth, cache)))
                 .fold(
                     init_value,
@@ -78,7 +76,7 @@ where
                         if a.0 <= b.0 {
                             a
                         } else {
-                            (b.0, Some(*act))
+                            (b.0, Some(act))
                         }
                     },
                 )

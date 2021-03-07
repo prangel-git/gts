@@ -19,59 +19,60 @@ where
     AgentId: Eq,
     T: Environment<Action, AgentId> + Copy + Eq + Hash,
 {
-    let actions = env.valid_actions();
+    let next_action = env.valid_actions().next();
 
-    if actions.is_empty() | env.is_terminal() {
-        return None;
-    } else {
-        let init_action = actions[0];
+    match next_action {
+        Some(init_action) => {
+            let action_score_visits = env
+                .valid_actions()
+                .map(|x| (x, read_cache(&env.what_if(&x), cache)))
+                .collect::<Vec<_>>();
 
-        let action_score_visits = actions
-            .iter()
-            .map(|x| (*x, read_cache(&env.what_if(x), cache)))
-            .collect::<Vec<_>>();
-
-        let total_visits = action_score_visits
-            .iter()
-            .fold(0u32, |a, (_, (_, visits))| a + visits) as f64;
-
-        let exploration_numerator = exploration * total_visits.ln().sqrt();
-
-        let is_agent_turn = *agent_id == env.turn();
-
-        let (best_action, _) = if is_agent_turn {
-            action_score_visits
+            let total_visits = action_score_visits
                 .iter()
-                .map(|(a, (score, visits))| (a, uct_score(*score, *visits, exploration_numerator)))
-                .fold(
-                    (init_action, f64::NEG_INFINITY),
-                    |(act_0, score_0), (act_1, score_1)| {
-                        if score_0 < score_1 {
-                            (*act_1, score_1)
-                        } else {
-                            (act_0, score_0)
-                        }
-                    },
-                )
-        } else {
-            action_score_visits
-                .iter()
-                .map(|(a, (score, visits))| {
-                    (a, uct_score(-(*score), *visits, exploration_numerator))
-                })
-                .fold(
-                    (init_action, f64::NEG_INFINITY),
-                    |(act_0, score_0), (act_1, score_1)| {
-                        if score_0 < score_1 {
-                            (*act_1, score_1)
-                        } else {
-                            (act_0, score_0)
-                        }
-                    },
-                )
-        };
+                .fold(0u32, |a, (_, (_, visits))| a + visits) as f64;
 
-        return Some(best_action);
+            let exploration_numerator = exploration * total_visits.ln().sqrt();
+
+            let is_agent_turn = *agent_id == env.turn();
+
+            let (best_action, _) = if is_agent_turn {
+                action_score_visits
+                    .iter()
+                    .map(|(a, (score, visits))| {
+                        (a, uct_score(*score, *visits, exploration_numerator))
+                    })
+                    .fold(
+                        (init_action, f64::NEG_INFINITY),
+                        |(act_0, score_0), (act_1, score_1)| {
+                            if score_0 < score_1 {
+                                (*act_1, score_1)
+                            } else {
+                                (act_0, score_0)
+                            }
+                        },
+                    )
+            } else {
+                action_score_visits
+                    .iter()
+                    .map(|(a, (score, visits))| {
+                        (a, uct_score(-(*score), *visits, exploration_numerator))
+                    })
+                    .fold(
+                        (init_action, f64::NEG_INFINITY),
+                        |(act_0, score_0), (act_1, score_1)| {
+                            if score_0 < score_1 {
+                                (*act_1, score_1)
+                            } else {
+                                (act_0, score_0)
+                            }
+                        },
+                    )
+            };
+
+            Some(best_action)
+        }
+        None => None,
     }
 }
 

@@ -51,8 +51,7 @@ where
 
         let mut next_envs = env
             .valid_actions()
-            .iter()
-            .map(|a| (*a, env.what_if(a)))
+            .map(|a| (a, env.what_if(&a)))
             .collect::<Vec<_>>();
 
         // We sort decreasingly by the score stored in the cache.
