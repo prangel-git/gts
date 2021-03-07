@@ -1,5 +1,6 @@
-use std::collections::HashMap;
 use std::hash::Hash;
+use std::cmp::Ordering;
+use std::collections::HashMap;
 
 use crate::abstractions::Environment;
 
@@ -19,63 +20,33 @@ where
     AgentId: Eq,
     T: Environment<Action, AgentId> + Copy + Eq + Hash,
 {
-    let next_action = env.valid_actions().next();
+    let (_, total_visits) = read_cache(env, cache);
 
-    match next_action {
-        Some(init_action) => {
-            let action_score_visits = env
-                .valid_actions()
-                .map(|x| (x, read_cache(&env.what_if(&x), cache)))
-                .collect::<Vec<_>>();
+    let exploration_numerator = exploration * ((total_visits + 1) as f64).ln().sqrt();
 
-            let total_visits = action_score_visits
-                .iter()
-                .fold(0u32, |a, (_, (_, visits))| a + visits) as f64;
+    let invert_score = if *agent_id == env.turn() {1.0f64} else {-1.0f64};
 
-            let exploration_numerator = exploration * total_visits.ln().sqrt();
+    let best_action = env
+        .valid_actions()
+        .map(|x| (x, read_cache(&env.what_if(&x), cache)))
+        .map(|(x, (score, visits))| (x, uct_score(invert_score * score, visits, exploration_numerator)))
+        .max_by(|(_, score0), (_, score1)| {
+            if score0 < score1 {
+                Ordering::Less
+            } else if score0 == score1 {
+                Ordering::Equal
+            }else {
+                Ordering::Greater
+            }
+        });
 
-            let is_agent_turn = *agent_id == env.turn();
-
-            let (best_action, _) = if is_agent_turn {
-                action_score_visits
-                    .iter()
-                    .map(|(a, (score, visits))| {
-                        (a, uct_score(*score, *visits, exploration_numerator))
-                    })
-                    .fold(
-                        (init_action, f64::NEG_INFINITY),
-                        |(act_0, score_0), (act_1, score_1)| {
-                            if score_0 < score_1 {
-                                (*act_1, score_1)
-                            } else {
-                                (act_0, score_0)
-                            }
-                        },
-                    )
-            } else {
-                action_score_visits
-                    .iter()
-                    .map(|(a, (score, visits))| {
-                        (a, uct_score(-(*score), *visits, exploration_numerator))
-                    })
-                    .fold(
-                        (init_action, f64::NEG_INFINITY),
-                        |(act_0, score_0), (act_1, score_1)| {
-                            if score_0 < score_1 {
-                                (*act_1, score_1)
-                            } else {
-                                (act_0, score_0)
-                            }
-                        },
-                    )
-            };
-
-            Some(best_action)
-        }
+    match best_action {
+        Some((action, _)) => Some(action),
         None => None,
     }
 }
 
+/// Calculates the uct score of an action based on the average score of and the number of visits of a node.
 fn uct_score(score: f64, visits: u32, exploration_numerator: f64) -> f64 {
     if visits == 0 {
         return exploration_numerator;
