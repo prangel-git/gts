@@ -36,8 +36,8 @@ where
         .valid_actions()
         .map(|x| (x, read_cache(&env.what_if(&x), cache)))
         .map(|(x, (score, visits))| {
-            let score = if is_agent_turn { score } else { -score };
-            (x, uct_score(score, visits, exploration_numerator))
+            let sc = if is_agent_turn { score } else { -score };
+            (x, uct_score(sc, visits, exploration_numerator))
         })
         .max_by(|(_, score0), (_, score1)| {
             if score0 < score1 {
