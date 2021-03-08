@@ -15,9 +15,10 @@ fn main() {
 
     let exploration = 2f64.sqrt();
 
-    let mut player_x = MctsUctAgent::new(AgentId::X, exploration, 50);
-    // let mut player_o = MctsUctAgent::new(AgentId::O, exploration, 100);
-    let mut player_o = AlphabetaAgent::new(AgentId::O, &depth_first, 10);
+    //let mut player_x = MctsUctAgent::new(AgentId::X, exploration, 300);
+    let mut player_o = MctsUctAgent::new(AgentId::O, exploration, 400);
+    let mut player_x = AlphabetaAgent::new(AgentId::X, &depth_first, 10);
+    // let mut player_o = AlphabetaAgent::new(AgentId::O, &depth_first, 10);
 
     let log = play(&mut board, &mut player_x, &mut player_o);
 

@@ -72,7 +72,7 @@ impl NextAction {
     /// Initializes structure based on a given board.
     fn new(board: &Board) -> Self {
         let board_state = board.moves_o | board.moves_x;
-        let current = 0;
+        let current = if board.is_terminal() {9} else {0};
         NextAction {
             board_state,
             current,
