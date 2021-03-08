@@ -13,10 +13,10 @@ where
     /// Returns true iff the environment gets updated when 'agent' performs action 'a'.
     fn update(&mut self, a: &Action) -> bool;
 
-    /// Returns what would happen an agent attempts a given action
+    /// Returns what would happen if an agent attempts a given action
     fn what_if(&self, a: &Action) -> Self;
 
-    /// Returns a vector with the valid actions for a given agent
+    /// Returns an iterator with the valid actions for a given agent
     fn valid_actions(&self) -> Self::ActionIter;
 
     /// Returns true iff the environment accepts 'action'.
