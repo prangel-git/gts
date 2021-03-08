@@ -1,4 +1,3 @@
-use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::hash::Hash;
 
@@ -39,15 +38,7 @@ where
             let sc = if is_agent_turn { score } else { -score };
             (x, uct_score(sc, visits, exploration_numerator))
         })
-        .max_by(|(_, score0), (_, score1)| {
-            if score0 < score1 {
-                Ordering::Less
-            } else if score0 == score1 {
-                Ordering::Equal
-            } else {
-                Ordering::Greater
-            }
-        });
+        .max_by(|(_, score0), (_, score1)| score0.partial_cmp(score1).expect("Tried to compare a NaN") );
 
     match best_action {
         Some((action, _)) => Some(action),

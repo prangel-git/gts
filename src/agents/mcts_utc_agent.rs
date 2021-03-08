@@ -76,6 +76,7 @@ where
             self.learn(env);
         }
 
-        return uct(env, &self.agent_id, &self.cache, self.exploration);
+        // For the return, we set exploration to 0. That way we pick the best seen action.
+        return uct(env, &self.agent_id, &self.cache, 0f64);
     }
 }
