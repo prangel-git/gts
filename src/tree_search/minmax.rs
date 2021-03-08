@@ -1,6 +1,5 @@
 use crate::abstractions::Environment;
 
-use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::hash::Hash;
 
@@ -56,17 +55,14 @@ where
                 (score, a)
             })
             .max_by(|(score0, _), (score1, _)| {
-                let direction = if is_agent_turn {
-                    score0 < score1
+                if is_agent_turn {
+                    score0
+                        .partial_cmp(score1)
+                        .expect("Trying to compare with NaN")
                 } else {
-                    score0 > score1
-                };
-                if direction {
-                    Ordering::Less
-                } else if score0 == score1 {
-                    Ordering::Equal
-                } else {
-                    Ordering::Greater
+                    score1
+                        .partial_cmp(score0)
+                        .expect("Trying to compare with NaN")
                 }
             });
 
