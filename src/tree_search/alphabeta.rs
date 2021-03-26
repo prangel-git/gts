@@ -97,7 +97,6 @@ where
                     action = Some(a);
                 }
 
-                value = value.min(this_value);
                 next_beta = next_beta.min(value);
 
                 if next_beta <= alpha {
@@ -106,7 +105,7 @@ where
             }
         };
 
-        cache.insert(*env, (value, action, depth));
+        // cache.insert(*env, (value, action, depth));
 
         return (value, action);
     }

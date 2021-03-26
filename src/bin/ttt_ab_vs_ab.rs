@@ -14,7 +14,8 @@ use games::tree_search::depth_first;
 fn main() {
     let mut board = Board::initial_state();
 
-    let mut player_x = AlphabetaAgent::new(AgentId::X, &depth_first, 10);
+    // let mut player_x = AlphabetaAgent::new(AgentId::X, &depth_first, 10);
+    let mut player_x = AlphabetaGiovanni::new(AgentId::X, &depth_first, 10);
     let mut player_o = AlphabetaGiovanni::new(AgentId::O, &depth_first, 10);
     // let mut player_o = AlphabetaAgent::new(AgentId::O, &depth_first, 10);
 

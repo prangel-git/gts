@@ -4,6 +4,9 @@ pub const DMAX: Dsize = std::u8::MAX; // Max possible depth.
 mod depth_first;
 pub use self::depth_first::depth_first;
 
+mod greedy_reward;
+pub use self::greedy_reward::greedy_reward;
+
 mod minmax;
 pub use self::minmax::minmax;
 

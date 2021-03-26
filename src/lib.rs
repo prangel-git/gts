@@ -3,6 +3,8 @@ pub mod agents;
 pub mod tictactoe;
 pub mod tree_search;
 pub mod tree_search_giovanni;
+pub mod othello;
+
 
 #[cfg(test)]
 mod tests {
