@@ -1,8 +1,8 @@
-use games::abstractions::Environment;
-use games::tictactoe::AgentId;
-use games::tictactoe::Board;
-use games::tree_search::depth_first;
-use games::tree_search::minmax;
+use gts::abstractions::Environment;
+use gts::tictactoe::AgentId;
+use gts::tictactoe::Board;
+use gts::tree_search::depth_first;
+use gts::tree_search::minmax;
 
 use std::collections::HashMap;
 

@@ -1,10 +1,10 @@
-use games::abstractions::Environment;
+use gts::abstractions::Environment;
 
-use games::abstractions::play;
-use games::agents::human_agent;
+use gts::abstractions::play;
+use gts::agents::human_agent;
 
-use games::tictactoe::AgentId;
-use games::tictactoe::Board;
+use gts::tictactoe::AgentId;
+use gts::tictactoe::Board;
 
 /// Plays tic tac toe with two human players.
 fn main() {

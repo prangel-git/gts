@@ -1,5 +1,5 @@
 [package]
-name = "games"
+name = "gts"
 version = "0.1.0"
 authors = ["anonymous"]
 edition = "2018"

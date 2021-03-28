@@ -1,13 +1,13 @@
-use games::abstractions::play;
-use games::abstractions::Environment;
+use gts::abstractions::play;
+use gts::abstractions::Environment;
 
-use games::agents::alphabeta_agent::AlphabetaAgent;
-use games::agents::mcts_utc_agent::MctsUctAgent;
+use gts::agents::alphabeta_agent::AlphabetaAgent;
+use gts::agents::mcts_utc_agent::MctsUctAgent;
 
-use games::tictactoe::AgentId;
-use games::tictactoe::Board;
+use gts::tictactoe::AgentId;
+use gts::tictactoe::Board;
 
-use games::tree_search::depth_first;
+use gts::tree_search::depth_first;
 
 /// Alpha-beta prunning vs mcts playing tic tac toe.
 fn main() {

@@ -1,12 +1,12 @@
-use games::abstractions::play;
-use games::abstractions::Environment;
+use gts::abstractions::play;
+use gts::abstractions::Environment;
 
-use games::agents::minmax_agent;
+use gts::agents::minmax_agent;
 
-use games::tictactoe::AgentId;
-use games::tictactoe::Board;
+use gts::tictactoe::AgentId;
+use gts::tictactoe::Board;
 
-use games::tree_search::depth_first;
+use gts::tree_search::depth_first;
 use minmax_agent::MinmaxAgent;
 
 /// Plays tic tac toe with a minmax player vs minmax player
