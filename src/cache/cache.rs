@@ -44,7 +44,7 @@ where
 
         match self.cache.get(env) {
             Some(data) => {
-                for (_, child) in data.get_children() {
+                for (_, child) in data.children() {
                     for child_descendants in self.get_descendants(child) {
                         descendants.insert(child_descendants.clone());
                     }
@@ -73,7 +73,7 @@ where
     let stored: Stored<Action, AgentId, T, StoredData> = Stored::new(&env);
 
     if depth > 0 {
-        for (_, child) in stored.get_children() {
+        for (_, child) in stored.children() {
             let child_cache = find_descendants(child, depth - 1);
             cache.extend(child_cache);
         }

@@ -37,7 +37,6 @@ where
 
     /// Returns the agent's action given an environment.
     fn action(&mut self, env: &T) -> Option<Action> {
-        
         println!("The current board looks like:");
         println!("{}", env);
         println!("You are player: {}.", self.agent_id);

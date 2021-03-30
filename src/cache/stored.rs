@@ -1,14 +1,13 @@
 use std::rc::Rc;
 
-use std::marker::PhantomData;
-
 use crate::abstractions::Environment;
 
 /// Keeps the information stored in a cache. This information will be indexed by an environment.
 pub struct Stored<Action, AgentId, T, StoredData> {
     children: Vec<(Action, Rc<T>)>,
+    turn: AgentId,
+    is_terminal: bool,
     pub extra: StoredData,
-    agent_id: PhantomData<AgentId>,
 }
 
 /// Implements methods for the stored cache data.
@@ -28,15 +27,30 @@ where
 
         let extra = Default::default();
 
+        let turn = env.turn();
+
+        let is_terminal = env.is_terminal();
+
         Stored {
             children,
+            turn,
+            is_terminal,
             extra,
-            agent_id: PhantomData,
         }
     }
 
-    /// Returns reference to children.
-    pub fn get_children(&self) -> &Vec<(Action, Rc<T>)> {
+    /// Returns agent turn
+    pub fn turn(&self) -> &AgentId {
+        &self.turn
+    }
+
+    /// Return children
+    pub fn children(&self) -> &Vec<(Action, Rc<T>)> {
         &self.children
+    }
+
+    /// Return is_terminal
+    pub fn is_terminal(&self) -> bool {
+        self.is_terminal
     }
 }
