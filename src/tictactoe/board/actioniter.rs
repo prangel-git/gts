@@ -12,7 +12,7 @@ pub struct ActionIter {
 impl ActionIter {
     /// Initializes structure based on a given board.
     pub fn new(board: &Board) -> Self {
-        let board_state = filled_positions(board);
+        let board_state = board.moves_x | board.moves_o;
         let current = if board.is_terminal() { 9 } else { 0 };
         ActionIter {
             board_state,

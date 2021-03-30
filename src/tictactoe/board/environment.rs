@@ -4,6 +4,8 @@ use crate::tictactoe::{Action, AgentId};
 
 use super::*;
 
+use super::utils::*;
+
 /// Implementation of environment for tic tac toe board.
 impl Environment<Action, AgentId> for Board {
     type ActionIter = ActionIter;
