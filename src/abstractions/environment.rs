@@ -5,7 +5,7 @@ pub trait Environment<Action, AgentId>
 where
     AgentId: Eq,
 {
-    type ActionIter: Iterator<Item = Action> + Copy;
+    type ActionIter: Iterator<Item = Action>;
 
     /// Produces an initial environment
     fn initial_state() -> Self;
@@ -17,7 +17,7 @@ where
     fn what_if(&self, a: &Action) -> Self;
 
     /// Returns an iterator with the valid actions for a given agent
-    fn valid_actions(&self) -> &Self::ActionIter;
+    fn valid_actions(&self) -> Self::ActionIter;
 
     /// Returns true iff the environment accepts 'action'.
     fn is_valid(&self, action: &Action) -> bool;
