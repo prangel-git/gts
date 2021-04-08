@@ -1,17 +1,15 @@
-use std::collections::HashMap;
-use std::hash::Hash;
-
 use crate::abstractions::Environment;
 
 use super::read_cache;
 
-use super::Stored;
+use super::Cache;
+use super::Hash;
 
 /// Picks an action by using the upper confidence bound criteria.
 pub fn uct<Action, AgentId, T>(
     env: &T,
     agent_id: &AgentId,
-    cache: &HashMap<T, Stored>,
+    cache: &Cache<T>,
     exploration: f64,
 ) -> Option<Action>
 where

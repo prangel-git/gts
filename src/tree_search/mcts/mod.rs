@@ -1,3 +1,6 @@
+use std::collections::HashMap;
+use std::hash::Hash;
+
 mod base;
 pub use self::base::mcts;
 
@@ -10,3 +13,4 @@ use self::utils::find_terminal_value;
 use self::utils::read_cache;
 
 type Stored = (f64, u32);
+type Cache<T> = HashMap<T, Stored>;

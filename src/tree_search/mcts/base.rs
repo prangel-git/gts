@@ -1,12 +1,11 @@
-use std::collections::HashMap;
-use std::hash::Hash;
-
 use crate::abstractions::Environment;
 
 use super::add_value;
 use super::find_terminal_value;
 
+use super::Cache;
 use super::Stored;
+use super::Hash;
 
 /// Runs montecarlo tree search in an environment.
 /// The number of wins and loses at that node is stored in the cache.
@@ -14,8 +13,8 @@ use super::Stored;
 pub fn mcts<Action, AgentId, T>(
     env: &T,
     agent_id: &AgentId,
-    selection_fn: &dyn Fn(&T, &AgentId, &HashMap<T, Stored>) -> Option<Action>,
-    cache: &mut HashMap<T, Stored>,
+    selection_fn: &dyn Fn(&T, &AgentId, &Cache<T>) -> Option<Action>,
+    cache: &mut Cache<T>,
 ) -> Stored
 where
     AgentId: Eq,
