@@ -14,8 +14,7 @@ use super::Dsize;
 pub fn update_tree<Action, AgentId, T, R>(env: &T, depth: Dsize, cache: &mut HashMap<T, R>)
 where
     AgentId: Eq,
-    T: Environment<Action, AgentId> + Copy + Eq + Hash,
-    R: Copy,
+    T: Environment<Action, AgentId> + Eq + Hash,
 {
     let visited = find_descendants(env, depth);
 
@@ -23,13 +22,13 @@ where
 }
 
 /// Visit positions up to a given depth
-fn find_descendants<Action, AgentId, T>(env: &T, depth: Dsize) -> HashSet<T>
+fn find_descendants<Action, AgentId, T>(env: &T, depth: Dsize) -> HashSet<&T>
 where
     AgentId: Eq,
-    T: Environment<Action, AgentId> + Copy + Eq + Hash,
+    T: Environment<Action, AgentId> + Eq + Hash,
 {
     let mut visited = HashSet::new();
-    visited.insert(*env);
+    visited.insert(env.clone());
 
     if depth == 0 || env.is_terminal() {
         return visited;

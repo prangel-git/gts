@@ -1,10 +1,7 @@
 /// Functions required to represent an environment.
 /// Action: Type of the actions that the environment accepts.
 /// AgentId: Type of the agent identity in the environment.
-pub trait Environment<Action, AgentId>
-where
-    AgentId: Eq,
-{
+pub trait Environment<Action, AgentId> {
     type ActionIter: Iterator<Item = Action>;
 
     /// Produces an initial environment

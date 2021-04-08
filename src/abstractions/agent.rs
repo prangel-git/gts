@@ -5,7 +5,6 @@ use super::environment::Environment;
 /// AgentId: Type of the agent identity in the environment.
 pub trait Agent<Action, AgentId, T>
 where
-    AgentId: Eq,
     T: Environment<Action, AgentId>,
 {
     /// Returns the identity of the agent in the environment T.

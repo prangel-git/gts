@@ -24,7 +24,7 @@ pub fn alphabeta<Action, AgentId, T>(
 where
     Action: Copy,
     AgentId: Eq,
-    T: Environment<Action, AgentId> + Copy + Clone + Eq + Hash,
+    T: Environment<Action, AgentId> + Clone + Eq + Hash,
 {
     // Checks whether the value is stored in the cache already.
     match cache.get(env) {
@@ -39,12 +39,12 @@ where
     if env.is_terminal() {
         // If the value is terminal, we store it with maximum depth (terminal values will always have the same reward)
         let stored_value = reward(env, agent_id);
-        cache.insert(*env, (stored_value, None, DMAX));
+        cache.insert(env.clone(), (stored_value, None, DMAX));
         return (stored_value, None);
     } else if depth == 0 {
         // When we reach depth 0, we store the reward.
         let stored_value = reward(env, agent_id);
-        cache.insert(*env, (stored_value, None, 0));
+        cache.insert(env.clone(), (stored_value, None, 0));
         return (stored_value, None);
     } else {
         let next_depth = depth - 1;
@@ -103,7 +103,7 @@ where
             }
         };
 
-        cache.insert(*env, (value, action, depth));
+        cache.insert(env.clone(), (value, action, depth));
 
         return (value, action);
     }

@@ -5,18 +5,12 @@ use crate::abstractions::Agent;
 use crate::abstractions::Environment;
 
 /// A human player. It stores the identity of the player in a given environment.
-pub struct HumanPlayer<AgentId>
-where
-    AgentId: Display + Copy + Eq,
-{
+pub struct HumanPlayer<AgentId> {
     agent_id: AgentId,
 }
 
 /// Methods used by a human player
-impl<AgentId> HumanPlayer<AgentId>
-where
-    AgentId: Display + Copy + Eq,
-{
+impl<AgentId> HumanPlayer<AgentId> {
     pub fn new(agent_id: AgentId) -> Self {
         Self { agent_id }
     }
@@ -27,12 +21,12 @@ where
 impl<Action, AgentId, T> Agent<Action, AgentId, T> for HumanPlayer<AgentId>
 where
     Action: FromStr,
-    AgentId: Display + Copy + Eq,
+    AgentId: Display + Eq + Copy,
     T: Environment<Action, AgentId> + Display,
 {
     /// Returns the identity of the agent in the environment T.
     fn identity(&self) -> AgentId {
-        return self.agent_id;
+        self.agent_id
     }
 
     /// Returns the agent's action given an environment.

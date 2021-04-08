@@ -10,11 +10,7 @@ use crate::tree_search::Dsize;
 /// A minmax agent will play by finding the best move found by the
 /// minmax search with a given depth and reward function.
 /// The agent caches moves previously seen
-pub struct MinmaxAgent<'a, Action, AgentId, T>
-where
-    AgentId: Eq,
-    T: Eq + Hash + Copy,
-{
+pub struct MinmaxAgent<'a, Action, AgentId, T> {
     agent_id: AgentId,
     reward: &'a dyn Fn(&T, &AgentId) -> f64,
     depth: Dsize,
@@ -22,11 +18,7 @@ where
 }
 
 /// Methods for MinmaxAgent
-impl<'a, Action, AgentId, T> MinmaxAgent<'a, Action, AgentId, T>
-where
-    AgentId: Eq,
-    T: Eq + Hash + Copy,
-{
+impl<'a, Action, AgentId, T> MinmaxAgent<'a, Action, AgentId, T> {
     pub fn new(agent_id: AgentId, reward: &'a dyn Fn(&T, &AgentId) -> f64, depth: Dsize) -> Self {
         MinmaxAgent {
             agent_id,
@@ -42,11 +34,11 @@ impl<'a, Action, AgentId, T> Agent<Action, AgentId, T> for MinmaxAgent<'a, Actio
 where
     AgentId: Eq + Copy,
     Action: Copy,
-    T: Environment<Action, AgentId> + Eq + Hash + Copy,
+    T: Environment<Action, AgentId> + Eq + Hash + Clone,
 {
     /// Returns the agent identity in the game.
     fn identity(&self) -> AgentId {
-        return self.agent_id;
+        self.agent_id
     }
 
     /// Produces an action based on minmax search.

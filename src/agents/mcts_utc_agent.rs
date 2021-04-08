@@ -12,11 +12,7 @@ use crate::tree_search::uct;
 ///
 /// 'exploration' controls the trade-off between exploration and exploitation.
 /// 'mc_runs' is the number of montacarlo runs in each position.
-pub struct MctsUctAgent<AgentId, T>
-where
-    AgentId: Eq,
-    T: Eq + Hash,
-{
+pub struct MctsUctAgent<AgentId, T> {
     agent_id: AgentId,
     exploration: f64,
     mc_runs: u16,
@@ -65,7 +61,7 @@ where
 {
     /// Returns the agent identity in the game.
     fn identity(&self) -> AgentId {
-        return self.agent_id;
+        self.agent_id
     }
 
     /// Produces an action based with mcts using the ucb selection method.

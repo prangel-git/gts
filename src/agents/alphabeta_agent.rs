@@ -16,11 +16,7 @@ use crate::tree_search::Dsize;
 /// An agent that will play by finding the best move found by the
 /// alphabeta-prunning search with a given depth and reward function.
 /// The agent caches moves previously seen
-pub struct AlphabetaAgent<'a, Action, AgentId, T>
-where
-    AgentId: Eq,
-    T: Eq + Hash + Copy,
-{
+pub struct AlphabetaAgent<'a, Action, AgentId, T> {
     agent_id: AgentId,
     reward: &'a dyn Fn(&T, &AgentId) -> f64,
     depth: Dsize,
@@ -28,11 +24,7 @@ where
 }
 
 /// Methods for Alphabeta
-impl<'a, Action, AgentId, T> AlphabetaAgent<'a, Action, AgentId, T>
-where
-    AgentId: Eq,
-    T: Eq + Hash + Copy,
-{
+impl<'a, Action, AgentId, T> AlphabetaAgent<'a, Action, AgentId, T> {
     pub fn new(agent_id: AgentId, reward: &'a dyn Fn(&T, &AgentId) -> f64, depth: Dsize) -> Self {
         AlphabetaAgent {
             agent_id,
@@ -48,11 +40,11 @@ impl<'a, Action, AgentId, T> Agent<Action, AgentId, T> for AlphabetaAgent<'a, Ac
 where
     AgentId: Eq + Copy,
     Action: Copy,
-    T: Environment<Action, AgentId> + Eq + Hash + Copy,
+    T: Environment<Action, AgentId> + Eq + Clone + Hash,
 {
     /// Returns the agent identity in the game.
     fn identity(&self) -> AgentId {
-        return self.agent_id;
+        self.agent_id
     }
 
     /// Produces an action based on alphabeta-pruning search.

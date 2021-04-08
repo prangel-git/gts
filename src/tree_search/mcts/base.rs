@@ -4,8 +4,8 @@ use super::add_value;
 use super::find_terminal_value;
 
 use super::Cache;
-use super::Stored;
 use super::Hash;
+use super::Stored;
 
 /// Runs montecarlo tree search in an environment.
 /// The number of wins and loses at that node is stored in the cache.
