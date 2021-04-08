@@ -61,7 +61,7 @@ impl<Action, AgentId, T> Agent<Action, AgentId, T> for MctsUctAgent<AgentId, T>
 where
     AgentId: Eq + Copy,
     Action: Copy,
-    T: Environment<Action, AgentId> + Eq + Hash + Copy,
+    T: Environment<Action, AgentId> + Eq + Hash + Clone,
 {
     /// Returns the agent identity in the game.
     fn identity(&self) -> AgentId {
