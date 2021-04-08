@@ -1,5 +1,7 @@
 use crate::abstractions::Environment;
 
+use super::Hash;
+
 use super::Stored;
 use super::Cache;
 
