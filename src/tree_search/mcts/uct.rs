@@ -17,7 +17,7 @@ pub fn uct<Action, AgentId, T>(
 where
     Action: Copy,
     AgentId: Eq,
-    T: Environment<Action, AgentId> + Copy + Eq + Hash,
+    T: Environment<Action, AgentId> + Eq + Hash + Clone,
 {
     let total_visits: u32 = env
         .valid_actions()

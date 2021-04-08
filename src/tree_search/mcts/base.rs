@@ -19,7 +19,7 @@ pub fn mcts<Action, AgentId, T>(
 ) -> Stored
 where
     AgentId: Eq,
-    T: Environment<Action, AgentId> + Copy + Eq + Hash,
+    T: Environment<Action, AgentId> + Eq + Hash + Clone,
 {
     let value = match selection_fn(env, agent_id, cache) {
         Some(action) => {

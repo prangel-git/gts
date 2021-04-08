@@ -15,7 +15,7 @@ use crate::tree_search::uct;
 pub struct MctsUctAgent<AgentId, T>
 where
     AgentId: Eq,
-    T: Eq + Hash + Copy,
+    T: Eq + Hash,
 {
     agent_id: AgentId,
     exploration: f64,
@@ -27,7 +27,7 @@ where
 impl<AgentId, T> MctsUctAgent<AgentId, T>
 where
     AgentId: Eq + Copy,
-    T: Eq + Hash + Copy,
+    T: Eq + Hash,
 {
     /// creates a new montecarlo tree search agent.
     pub fn new(agent_id: AgentId, exploration: f64, mc_runs: u16) -> Self {
@@ -43,7 +43,7 @@ where
     fn learn<Action>(&mut self, env: &T)
     where
         Action: Copy,
-        T: Environment<Action, AgentId>,
+        T: Environment<Action, AgentId> + Clone,
     {
         let agent_id = self.agent_id;
         let exploration = self.exploration;

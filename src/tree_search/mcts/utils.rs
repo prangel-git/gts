@@ -8,7 +8,7 @@ use super::Stored;
 pub fn read_cache<Action, AgentId, T>(env: &T, cache: &HashMap<T, Stored>) -> Stored
 where
     AgentId: Eq,
-    T: Environment<Action, AgentId> + Copy + Eq + Hash,
+    T: Environment<Action, AgentId> + Eq + Hash + Clone,
 {
     match cache.get(env) {
         Some((score, visits)) => (*score, *visits),
@@ -23,14 +23,14 @@ pub fn add_value<Action, AgentId, T>(
     cache: &mut HashMap<T, Stored>,
 ) where
     AgentId: Eq,
-    T: Environment<Action, AgentId> + Copy + Eq + Hash,
+    T: Environment<Action, AgentId> + Eq + Hash + Clone,
 {
     let (mut score, mut visits) = read_cache(env, cache);
 
     score += this_score;
     visits += this_visits;
 
-    cache.insert(*env, (score, visits));
+    cache.insert(env.clone(), (score, visits));
 }
 
 /// Finds the value for a terminal action.
