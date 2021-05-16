@@ -5,6 +5,7 @@ use std::hash::Hash;
 
 use super::Dsize;
 use super::DMAX;
+use super::terminal_score;
 
 type Stored<Action> = (f64, Option<Action>, Dsize);
 
@@ -38,7 +39,7 @@ where
     }
     if env.is_terminal() {
         // If the value is terminal, we store it with maximum depth (terminal values will always have the same reward)
-        let stored_value = reward(env, agent_id);
+        let stored_value = terminal_score(env, agent_id);
         cache.insert(env.clone(), (stored_value, None, DMAX));
         return (stored_value, None);
     } else if depth == 0 {

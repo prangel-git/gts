@@ -29,19 +29,19 @@ where
 }
 
 /// Finds score for terminal environments
-fn terminal_score<Action, AgentId, T>(env: &T, agent: &AgentId) -> f64
+pub fn terminal_score<Action, AgentId, T>(env: &T, agent: &AgentId) -> f64
 where
     AgentId: Eq,
-    T: Environment<Action, AgentId> + Copy + Clone,
+    T: Environment<Action, AgentId>,
 {
     match env.winner() {
         Some(a) => {
             if a == *agent {
-                1.0
+                f64::MAX
             } else {
-                -1.0
+                f64::MIN
             }
         }
-        None => 0.0,
+        None => 0f64,
     }
 }
