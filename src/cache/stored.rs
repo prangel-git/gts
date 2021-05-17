@@ -2,9 +2,14 @@ use std::rc::Rc;
 
 use crate::abstractions::Environment;
 
+use super::ActionEnvironmentIter;
+
 /// Keeps the information stored in a cache. This information will be indexed by an environment.
-pub struct Stored<Action, AgentId, T, StoredData> {
-    children: Vec<(Action, Rc<T>)>,
+pub struct Stored<Action, AgentId, T, StoredData> 
+where
+T: Environment<Action, AgentId>
+{
+    action_environment: ActionEnvironmentIter<Action, AgentId, T>,
     turn: AgentId,
     is_terminal: bool,
     pub extra: StoredData,
@@ -20,22 +25,11 @@ where
 {
     /// Creates a new stored data.
     pub fn new(env: &Rc<T>) -> Self {
-        let children = env
-            .valid_actions()
-            .map(|action| (action, Rc::new(env.what_if(&action))))
-            .collect();
-
-        let extra = Default::default();
-
-        let turn = env.turn();
-
-        let is_terminal = env.is_terminal();
-
         Stored {
-            children,
-            turn,
-            is_terminal,
-            extra,
+            action_environment: ActionEnvironmentIter::new(env),
+            turn: env.turn(),
+            is_terminal: env.is_terminal(),
+            extra: StoredData::default(),
         }
     }
 
@@ -44,13 +38,13 @@ where
         &self.turn
     }
 
-    /// Return children
-    pub fn children(&self) -> &Vec<(Action, Rc<T>)> {
-        &self.children
-    }
-
     /// Return is_terminal
     pub fn is_terminal(&self) -> bool {
         self.is_terminal
+    }
+
+    /// Return action_environment iterator
+    pub fn action_environment_iter(&self) -> &ActionEnvironmentIter<Action, AgentId, T> {
+        &self.action_environment
     }
 }
