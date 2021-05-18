@@ -26,14 +26,10 @@ where
     } else if depth == 0 {
         (reward(env, agent_id), None)
     } else {
-        let next_depth = depth - 1;
-        let is_agent_turn = env.turn() == *agent_id;
-
         let mut value;
-
         let mut action = None;
 
-        if is_agent_turn {
+        if env.turn() == *agent_id {
             value = f64::NEG_INFINITY;
             let mut next_alpha = alpha;
 
@@ -42,7 +38,7 @@ where
                     &env.what_if(&a),
                     agent_id,
                     reward,
-                    next_depth,
+                    depth - 1,
                     next_alpha,
                     beta,
                 );
@@ -66,7 +62,7 @@ where
                     &env.what_if(&a),
                     agent_id,
                     reward,
-                    next_depth,
+                    depth - 1,
                     alpha,
                     next_beta,
                 );
