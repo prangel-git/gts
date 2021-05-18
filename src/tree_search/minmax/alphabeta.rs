@@ -2,7 +2,7 @@ use crate::abstractions::Environment;
 
 use std::hash::Hash;
 
-use super::terminal_score;
+use super::utils::terminal_score;
 
 /// Given a reward function, an agent identifier, and an environment, this function returns
 /// an estimate of the value. To calculate that estimate, the functions visits the tree of

@@ -1,8 +1,7 @@
 mod alphabeta;
 mod depth_first;
 mod minmax;
-
-use depth_first::terminal_score;
+mod utils;
 
 pub use alphabeta::alphabeta;
 pub use depth_first::depth_first;

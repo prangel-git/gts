@@ -2,7 +2,8 @@ use crate::abstractions::Environment;
 
 use std::hash::Hash;
 
-use super::terminal_score;
+use super::utils::flip_order;
+use super::utils::terminal_score;
 
 /// Given a reward function, an agent identifier, and an environment, this function returns
 /// an estimate of the value. To calculate that estimate, the functions visits the tree of
@@ -36,18 +37,5 @@ where
             })
             .max_by(|(score0, _), (score1, _)| flip_order(score0, score1, is_agent_turn))
             .unwrap()
-    }
-}
-
-/// Either compares score0 with score1, or score1 with score0 depending on flip.
-fn flip_order(score0: &f64, score1: &f64, flip: bool) -> std::cmp::Ordering {
-    if flip {
-        score0
-            .partial_cmp(score1)
-            .expect("Trying to compare with NaN")
-    } else {
-        score1
-            .partial_cmp(score0)
-            .expect("Trying to compare with NaN")
     }
 }

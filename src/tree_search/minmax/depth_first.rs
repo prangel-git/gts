@@ -1,5 +1,8 @@
 use crate::abstractions::Environment;
 
+use super::utils::flip_order;
+use super::utils::terminal_score;
+
 /// Calculates the reward by going all the way down the environment tree.
 pub fn depth_first<Action, AgentId, T>(env: &T, agent: &AgentId) -> f64
 where
@@ -16,32 +19,8 @@ where
         // and maximizes or minimizes that value depending on whether it is the turn of the player or not.
         let next_env = actions
             .map(|x| depth_first(&env.what_if(&x), agent))
-            .max_by(|a, b| {
-                if is_agent_turn {
-                    a.partial_cmp(&b).expect("Trying to compare with NaN")
-                } else {
-                    b.partial_cmp(&a).expect("Trying to compare with NaN")
-                }
-            });
+            .max_by(|a, b| flip_order(a, b, is_agent_turn));
 
         return next_env.unwrap();
-    }
-}
-
-/// Finds score for terminal environments
-pub fn terminal_score<Action, AgentId, T>(env: &T, agent: &AgentId) -> f64
-where
-    AgentId: Eq,
-    T: Environment<Action, AgentId>,
-{
-    match env.winner() {
-        Some(a) => {
-            if a == *agent {
-                f64::MAX
-            } else {
-                f64::MIN
-            }
-        }
-        None => 0f64,
     }
 }
