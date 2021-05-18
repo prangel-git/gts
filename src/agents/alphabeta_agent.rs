@@ -4,7 +4,6 @@ use crate::abstractions::Agent;
 use crate::abstractions::Environment;
 
 use crate::tree_search::alphabeta;
-use crate::tree_search::Dsize;
 
 // use super::super::tree_search::update_tree;
 
@@ -18,12 +17,12 @@ use crate::tree_search::Dsize;
 pub struct AlphabetaAgent<'a, AgentId, T> {
     agent_id: AgentId,
     reward: &'a dyn Fn(&T, &AgentId) -> f64,
-    depth: Dsize,
+    depth: u8,
 }
 
 /// Methods for Alphabeta
 impl<'a, AgentId, T> AlphabetaAgent<'a, AgentId, T> {
-    pub fn new(agent_id: AgentId, reward: &'a dyn Fn(&T, &AgentId) -> f64, depth: Dsize) -> Self {
+    pub fn new(agent_id: AgentId, reward: &'a dyn Fn(&T, &AgentId) -> f64, depth: u8) -> Self {
         AlphabetaAgent {
             agent_id,
             reward,

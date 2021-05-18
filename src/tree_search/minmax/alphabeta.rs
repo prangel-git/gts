@@ -3,7 +3,6 @@ use crate::abstractions::Environment;
 use std::hash::Hash;
 
 use super::terminal_score;
-use super::Dsize;
 
 /// Given a reward function, an agent identifier, and an environment, this function returns
 /// an estimate of the value. To calculate that estimate, the functions visits the tree of
@@ -13,7 +12,7 @@ pub fn alphabeta<Action, AgentId, T>(
     env: &T,
     agent_id: &AgentId,
     reward: &dyn Fn(&T, &AgentId) -> f64,
-    depth: Dsize,
+    depth: u8,
     alpha: f64,
     beta: f64,
 ) -> (f64, Option<Action>)

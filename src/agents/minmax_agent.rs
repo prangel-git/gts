@@ -4,7 +4,6 @@ use crate::abstractions::Agent;
 use crate::abstractions::Environment;
 
 use crate::tree_search::minmax;
-use crate::tree_search::Dsize;
 
 /// A minmax agent will play by finding the best move found by the
 /// minmax search with a given depth and reward function.
@@ -12,12 +11,12 @@ use crate::tree_search::Dsize;
 pub struct MinmaxAgent<'a, AgentId, T> {
     agent_id: AgentId,
     reward: &'a dyn Fn(&T, &AgentId) -> f64,
-    depth: Dsize,
+    depth: u8,
 }
 
 /// Methods for MinmaxAgent
 impl<'a, AgentId, T> MinmaxAgent<'a, AgentId, T> {
-    pub fn new(agent_id: AgentId, reward: &'a dyn Fn(&T, &AgentId) -> f64, depth: Dsize) -> Self {
+    pub fn new(agent_id: AgentId, reward: &'a dyn Fn(&T, &AgentId) -> f64, depth: u8) -> Self {
         MinmaxAgent {
             agent_id,
             reward,
