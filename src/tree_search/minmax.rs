@@ -21,42 +21,34 @@ where
     T: Environment<Action, AgentId> + Clone + Eq + Hash,
 {
     if env.is_terminal() {
-        // If the value is terminal, we store it with maximum depth (terminal values will always have the same reward)
         let stored_value = terminal_score(env, agent_id);
         return (stored_value, None);
     } else if depth == 0 {
-        // When we reach depth 0, we store the reward.
         let stored_value = reward(env, agent_id);
         return (stored_value, None);
     } else {
         let new_depth = depth - 1;
         let is_agent_turn = env.turn() == *agent_id;
 
-        let action_value = env
-            .valid_actions()
+        env.valid_actions()
             .map(|a| {
                 let (score, _) = minmax(&env.what_if(&a), agent_id, &reward, new_depth);
-                (score, a)
+                (score, Some(a))
             })
-            .max_by(|(score0, _), (score1, _)| {
-                if is_agent_turn {
-                    score0
-                        .partial_cmp(score1)
-                        .expect("Trying to compare with NaN")
-                } else {
-                    score1
-                        .partial_cmp(score0)
-                        .expect("Trying to compare with NaN")
-                }
-            });
+            .max_by(|(score0, _), (score1, _)| flip_order(score0, score1, is_agent_turn))
+            .unwrap()
+    }
+}
 
-        match action_value {
-            Some((value, action)) => {
-                return (value, Some(action));
-            }
-            None => {
-                return (f64::NEG_INFINITY, None);
-            }
-        }
+/// Either compares score0 with score1, or score1 with score0 depending on flip.
+fn flip_order(score0: &f64, score1: &f64, flip: bool) -> std::cmp::Ordering {
+    if flip {
+        score0
+            .partial_cmp(score1)
+            .expect("Trying to compare with NaN")
+    } else {
+        score1
+            .partial_cmp(score0)
+            .expect("Trying to compare with NaN")
     }
 }
