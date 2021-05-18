@@ -31,12 +31,6 @@ where
         return (stored_value, None);
     } else {
         let next_depth = depth - 1;
-
-        let next_envs = env
-            .valid_actions()
-            .map(|a| (a, env.what_if(&a)))
-            .collect::<Vec<_>>();
-
         let is_agent_turn = env.turn() == *agent_id;
 
         let mut value;
@@ -47,9 +41,15 @@ where
             value = f64::NEG_INFINITY;
             let mut next_alpha = alpha;
 
-            for (a, next_env) in next_envs {
-                let (this_value, _) =
-                    alphabeta(&next_env, agent_id, reward, next_depth, next_alpha, beta);
+            for a in env.valid_actions() {
+                let (this_value, _) = alphabeta(
+                    &env.what_if(&a),
+                    agent_id,
+                    reward,
+                    next_depth,
+                    next_alpha,
+                    beta,
+                );
 
                 if this_value > value {
                     value = this_value;
@@ -65,9 +65,15 @@ where
             value = f64::INFINITY;
             let mut next_beta = beta;
 
-            for (a, next_env) in next_envs {
-                let (this_value, _) =
-                    alphabeta(&next_env, agent_id, reward, next_depth, alpha, next_beta);
+            for a in env.valid_actions() {
+                let (this_value, _) = alphabeta(
+                    &env.what_if(&a),
+                    agent_id,
+                    reward,
+                    next_depth,
+                    alpha,
+                    next_beta,
+                );
 
                 if this_value < value {
                     value = this_value;
