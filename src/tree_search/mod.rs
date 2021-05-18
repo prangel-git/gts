@@ -11,9 +11,6 @@ pub use self::minmax::minmax;
 mod alphabeta;
 pub use self::alphabeta::alphabeta;
 
-mod update_tree;
-pub use self::update_tree::update_tree;
-
 mod mcts;
 pub use self::mcts::mcts;
 pub use self::mcts::uct;
