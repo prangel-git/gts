@@ -22,13 +22,9 @@ where
     T: Environment<Action, AgentId> + Clone + Eq + Hash,
 {
     if env.is_terminal() {
-        // If the value is terminal, we store it with maximum depth (terminal values will always have the same reward)
-        let stored_value = terminal_score(env, agent_id);
-        return (stored_value, None);
+        (terminal_score(env, agent_id), None)
     } else if depth == 0 {
-        // When we reach depth 0, we store the reward.
-        let stored_value = reward(env, agent_id);
-        return (stored_value, None);
+        (reward(env, agent_id), None)
     } else {
         let next_depth = depth - 1;
         let is_agent_turn = env.turn() == *agent_id;
@@ -87,6 +83,6 @@ where
             }
         };
 
-        return (value, action);
+        (value, action)
     }
 }

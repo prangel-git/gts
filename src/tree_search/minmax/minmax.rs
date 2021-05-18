@@ -21,11 +21,9 @@ where
     T: Environment<Action, AgentId> + Clone + Eq + Hash,
 {
     if env.is_terminal() {
-        let stored_value = terminal_score(env, agent_id);
-        return (stored_value, None);
+        (terminal_score(env, agent_id), None)
     } else if depth == 0 {
-        let stored_value = reward(env, agent_id);
-        return (stored_value, None);
+        (reward(env, agent_id), None)
     } else {
         let new_depth = depth - 1;
         let is_agent_turn = env.turn() == *agent_id;
