@@ -3,3 +3,10 @@
 [[package]]
 name = "gts"
 version = "0.1.0"
+dependencies = [
+ "minmax",
+]
+
+[[package]]
+name = "minmax"
+version = "0.1.0"
