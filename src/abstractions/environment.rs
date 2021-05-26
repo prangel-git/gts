@@ -2,8 +2,6 @@
 /// Action: Type of the actions that the environment accepts.
 /// AgentId: Type of the agent identity in the environment.
 pub trait Environment<Action, AgentId> {
-    type ActionIter: Iterator<Item = Action>;
-
     /// Produces an initial environment
     fn initial_state() -> Self;
 
@@ -14,7 +12,7 @@ pub trait Environment<Action, AgentId> {
     fn what_if(&self, a: &Action) -> Self;
 
     /// Returns an iterator with the valid actions for a given agent
-    fn valid_actions(&self) -> Self::ActionIter;
+    fn valid_actions(&self) -> Box<dyn Iterator<Item = Action>>;
 
     /// Returns true iff the environment accepts 'action'.
     fn is_valid(&self, action: &Action) -> bool;
