@@ -8,4 +8,4 @@ edition = "2018"
 
 [dependencies]
     minmax-tree-search = {git = "https://github.com/prangel-git/minmax-tree-search.git", branch = "main"}
-    # minmax-tree-search = {path = "../minmax"}
+    # minmax-tree-search = {path = "../minmax-tree-search"}
