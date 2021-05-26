@@ -5,18 +5,17 @@ pub struct MinMaxData<Action> {
     pub action: Option<Action>,
 }
 
-impl<Action> MinMaxData<Action>
-{
+impl<Action> MinMaxData<Action> {
     pub fn new(is_maximizer: bool) -> Self {
         if is_maximizer {
-            MinMaxData{
+            MinMaxData {
                 is_maximizer: true,
-                depth:0,
+                depth: 0,
                 value: f64::NEG_INFINITY,
                 action: None,
             }
         } else {
-            MinMaxData{
+            MinMaxData {
                 is_maximizer: false,
                 depth: 0,
                 value: f64::INFINITY,

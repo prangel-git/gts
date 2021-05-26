@@ -1,6 +1,12 @@
-use std::rc::Rc;
+use std::{cell::RefCell, collections::HashMap, rc::Rc};
 
 use crate::abstractions::Environment;
+
+use super::minmax_data::MinMaxData;
+
+pub type NodeRcRefCell<T, Action, AgentId> =
+    Rc<RefCell<Node<T, Action, AgentId, MinMaxData<Action>>>>;
+pub type Cache<T, Action, AgentId> = HashMap<Rc<T>, NodeRcRefCell<T, Action, AgentId>>;
 
 pub struct Node<T, Action, AgentId, D>
 where
