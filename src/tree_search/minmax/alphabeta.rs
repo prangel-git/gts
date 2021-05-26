@@ -1,6 +1,10 @@
 use crate::abstractions::Environment;
+use crate::cache::node::Cache;
+
+use crate::cache::utils::get_or_insert;
 
 use std::hash::Hash;
+use std::rc::Rc;
 
 use super::utils::terminal_score;
 
@@ -9,76 +13,89 @@ use super::utils::terminal_score;
 /// possible actions up to a given depth, and assumes that all visiting agents will take
 /// actions that will maximize the reward function.
 pub fn alphabeta<Action, AgentId, T>(
-    env: &T,
+    env: &Rc<T>,
     agent_id: &AgentId,
     reward: &dyn Fn(&T, &AgentId) -> f64,
-    depth: u8,
+    depth: usize,
     alpha: f64,
     beta: f64,
-) -> (f64, Option<Action>)
+    cache_old: &mut Cache<T, Action, AgentId>,
+    cache_new: &mut Cache<T, Action, AgentId>,
+) -> f64
 where
     Action: Copy,
     AgentId: Eq,
     T: Environment<Action, AgentId> + Clone + Eq + Hash,
 {
-    if env.is_terminal() {
-        (terminal_score(env, agent_id), None)
-    } else if depth == 0 {
-        (reward(env, agent_id), None)
+    let is_maximizer = env.turn() == *agent_id;
+    let root = get_or_insert(cache_old, env, is_maximizer);
+    let mut root_ptr = root.borrow_mut();
+
+    if root_ptr.data.depth >= depth {
+    } else if root_ptr.environment().is_terminal() {
+        root_ptr.data.depth = usize::MAX;
+        root_ptr.data.value = terminal_score(env.as_ref(), agent_id);
+    } else if depth == 1 {
+        root_ptr.data.depth = 1;
+        root_ptr.data.value = reward(env.as_ref(), agent_id);
+    } else if is_maximizer {
+        let mut value = f64::NEG_INFINITY;
+        let mut next_alpha = f64::NEG_INFINITY;
+
+        root_ptr.reset();
+        while let Some((next_env, action)) = root_ptr.next() {
+            let next_value = alphabeta(
+                &next_env,
+                agent_id,
+                reward,
+                depth - 1,
+                next_alpha,
+                beta,
+                cache_old,
+                cache_new,
+            );
+            if next_value > value {
+                value = next_value;
+                next_alpha = value;
+                root_ptr.data.value = value;
+                root_ptr.data.action = Some(action);
+            };
+
+            if next_alpha >= beta {
+                break;
+            }
+        }
+        root_ptr.data.depth = depth;
     } else {
-        let mut value;
-        let mut action = None;
+        let mut value = f64::INFINITY;
+        let mut next_beta = f64::INFINITY;
 
-        if env.turn() == *agent_id {
-            value = f64::NEG_INFINITY;
-            let mut next_alpha = alpha;
-
-            for a in env.valid_actions() {
-                let (this_value, _) = alphabeta(
-                    &env.what_if(&a),
-                    agent_id,
-                    reward,
-                    depth - 1,
-                    next_alpha,
-                    beta,
-                );
-
-                if this_value > value {
-                    value = this_value;
-                    next_alpha = value;
-                    action = Some(a);
-                }
-
-                if next_alpha >= beta {
-                    break;
-                }
+        root_ptr.reset();
+        while let Some((next_env, action)) = root_ptr.next() {
+            let next_value = alphabeta(
+                &next_env,
+                agent_id,
+                reward,
+                depth - 1,
+                alpha,
+                next_beta,
+                cache_old,
+                cache_new,
+            );
+            if next_value < value {
+                value = next_value;
+                next_beta = value;
+                root_ptr.data.value = value;
+                root_ptr.data.action = Some(action);
             }
-        } else {
-            value = f64::INFINITY;
-            let mut next_beta = beta;
 
-            for a in env.valid_actions() {
-                let (this_value, _) = alphabeta(
-                    &env.what_if(&a),
-                    agent_id,
-                    reward,
-                    depth - 1,
-                    alpha,
-                    next_beta,
-                );
-
-                if this_value < value {
-                    value = this_value;
-                    next_beta = value;
-                    action = Some(a);
-                }
-
-                if next_beta <= alpha {
-                    break;
-                }
+            if next_beta <= alpha {
+                break;
             }
-        };
-
-        (value, action)
+        }
+        root_ptr.data.depth = depth;
     }
+
+    cache_new.insert(env.clone(), root.clone());
+    root_ptr.data.value
 }
