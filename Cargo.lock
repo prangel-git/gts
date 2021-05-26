@@ -4,9 +4,9 @@
 name = "gts"
 version = "0.1.0"
 dependencies = [
- "minmax",
+ "minmax-tree-search",
 ]
 
 [[package]]
-name = "minmax"
+name = "minmax-tree-search"
 version = "0.1.0"
