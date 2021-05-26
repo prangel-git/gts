@@ -8,9 +8,8 @@ use crate::abstractions::Environment;
 use crate::cache::node::Cache;
 use crate::tree_search::alphabeta;
 
-/// A minmax agent will play by finding the best move found by the
-/// minmax search with a given depth and reward function.
-/// The agent caches moves previously seen
+/// A minmax agent plays based on a reward function and exploration of the game tree up to a given depth.
+/// This agent caches previously seen environments.
 pub struct AlphabetaAgent<'a, Action, AgentId, T>
 where
     T: Environment<Action, AgentId>,
