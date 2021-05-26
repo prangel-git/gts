@@ -40,7 +40,7 @@ where
         root_ptr.data.value = reward(env.as_ref(), agent_id);
     } else if is_maximizer {
         let mut value = f64::NEG_INFINITY;
-        let mut next_alpha = f64::NEG_INFINITY;
+        let mut next_alpha = alpha;
 
         root_ptr.reset();
         while let Some((next_env, action)) = root_ptr.next() {
@@ -68,7 +68,7 @@ where
         root_ptr.data.depth = depth;
     } else {
         let mut value = f64::INFINITY;
-        let mut next_beta = f64::INFINITY;
+        let mut next_beta = beta;
 
         root_ptr.reset();
         while let Some((next_env, action)) = root_ptr.next() {

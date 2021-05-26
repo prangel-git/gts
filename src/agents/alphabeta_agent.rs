@@ -6,7 +6,7 @@ use crate::abstractions::Agent;
 use crate::abstractions::Environment;
 
 use crate::cache::node::Cache;
-use crate::tree_search::minmax;
+use crate::tree_search::alphabeta;
 
 /// A minmax agent will play by finding the best move found by the
 /// minmax search with a given depth and reward function.
@@ -53,11 +53,13 @@ where
         let env_rc = Rc::new(env.clone());
         let mut cache = HashMap::new();
 
-        minmax(
+        alphabeta(
             &env_rc,
             &self.agent_id,
             self.reward,
             self.depth,
+            f64::NEG_INFINITY,
+            f64::INFINITY,
             &mut self.cache,
             &mut cache,
         );
