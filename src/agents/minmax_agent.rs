@@ -30,7 +30,7 @@ where
         MinmaxAgent {
             agent_id,
             reward,
-            depth: depth + 1, // Avoiding depth 0. With depth 0, minmax always returns None.
+            depth: depth + 1, // Avoiding depth 0. With depth 0, minmax does nothing.
             cache: HashMap::new(),
         }
     }
@@ -50,9 +50,6 @@ where
 
     /// Produces an action based on minmax search.
     fn action(&mut self, env: &T) -> Option<Action> {
-        // let (_, a) = minmax(env, &self.agent_id, self.reward, self.depth);
-        // return a;
-
         let env_rc = Rc::new(env.clone());
         let mut cache = HashMap::new();
 
