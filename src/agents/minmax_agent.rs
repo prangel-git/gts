@@ -1,3 +1,5 @@
+use std::fmt::Debug;
+
 use crate::abstractions::Agent;
 use crate::abstractions::Environment;
 
@@ -24,8 +26,8 @@ impl<'a, AgentId, T> MinmaxAgent<'a, AgentId, T> {
 /// Implements an agent that runs the minmax tree search arlgorithm to produce moves.
 impl<'a, Action, AgentId, T> Agent<Action, AgentId, T> for MinmaxAgent<'a, AgentId, T>
 where
-    AgentId: Eq + Copy,
-    Action: Copy,
+    AgentId: Eq + Copy + Debug,
+    Action: Copy + Debug,
     T: Environment<Action, AgentId>,
 {
     /// Returns the agent identity in the game.
@@ -35,13 +37,17 @@ where
 
     /// Produces an action based on minmax search.
     fn action(&mut self, env: &T) -> Option<Action> {
-        let (_, a) = minmax(
+        let (value, a) = minmax(
             env,
             &self.agent_id,
             self.reward,
             self.depth,
             f64::NEG_INFINITY,
             f64::INFINITY,
+        );
+        println!(
+            "Agent {:?}, Action {:?}, Value {:?}",
+            self.agent_id, &a, &value
         );
 
         a

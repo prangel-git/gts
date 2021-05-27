@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::fmt::Debug;
 use std::hash::Hash;
 use std::rc::Rc;
 
@@ -38,8 +39,8 @@ where
 /// Implements an agent that runs the minmax tree search arlgorithm to produce moves.
 impl<'a, Action, AgentId, T> Agent<Action, AgentId, T> for AlphabetaAgent<'a, Action, AgentId, T>
 where
-    AgentId: Eq + Copy,
-    Action: Copy,
+    AgentId: Eq + Copy + Debug,
+    Action: Copy + Debug,
     T: Environment<Action, AgentId> + Eq + Hash + Clone,
 {
     /// Returns the agent identity in the game.
@@ -66,7 +67,16 @@ where
         self.cache = cache;
 
         match self.cache.get(&env_rc) {
-            Some(node_ptr) => node_ptr.borrow().data.action,
+            Some(node_ptr) => {
+                println!(
+                    "Agent {:?} Action {:?}, Value {:?}, CacheSize {:?}",
+                    self.agent_id,
+                    node_ptr.borrow().data.action,
+                    node_ptr.borrow().data.value,
+                    self.cache.len()
+                );
+                node_ptr.borrow().data.action
+            }
             None => None,
         }
     }
