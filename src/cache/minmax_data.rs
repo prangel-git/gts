@@ -31,7 +31,7 @@ impl<Action> Default for MinMaxData<Action> {
             is_maximizer: true,
             depth: 0,
             value: f64::NAN,
-            action: None
-        }        
+            action: None,
+        }
     }
 }

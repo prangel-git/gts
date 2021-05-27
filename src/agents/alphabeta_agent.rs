@@ -1,3 +1,4 @@
+use std::cell::RefCell;
 use std::collections::HashMap;
 use std::fmt::Debug;
 use std::hash::Hash;
@@ -6,7 +7,9 @@ use std::rc::Rc;
 use crate::abstractions::Agent;
 use crate::abstractions::Environment;
 
+use crate::cache::minmax_data::MinMaxData;
 use crate::cache::node::Cache;
+use crate::cache::node::Node;
 use crate::tree_search::alphabeta;
 
 /// A minmax agent plays based on a reward function and exploration of the game tree up to a given depth.
@@ -51,20 +54,22 @@ where
     /// Produces an action based on minmax search.
     fn action(&mut self, env: &T) -> Option<Action> {
         let env_rc = Rc::new(env.clone());
-        let mut cache = HashMap::new();
+        let node = match self.cache.get(env) {
+            Some(n) => n.clone(),
+            None => Rc::new(RefCell::new(Node::new(&env_rc, MinMaxData::default()))),
+        };
+
+        self.cache.clear();
 
         alphabeta(
-            &env_rc,
+            &node,
             &self.agent_id,
             self.reward,
             self.depth,
             f64::NEG_INFINITY,
             f64::INFINITY,
             &mut self.cache,
-            &mut cache,
         );
-
-        self.cache = cache;
 
         match self.cache.get(&env_rc) {
             Some(node_ptr) => {

@@ -15,7 +15,7 @@ where
 {
     env: Rc<T>,
     turn: AgentId,
-    visited: Vec<(Rc<T>, Action)>,
+    visited: Vec<(Rc<RefCell<Self>>, Action)>,
     to_visit: Box<dyn Iterator<Item = Action>>,
     index: usize,
     pub data: D,
@@ -56,13 +56,15 @@ where
     T: Environment<Action, AgentId>,
     D: Default,
 {
-    type Item = (Rc<T>, Action);
+    type Item = (Rc<RefCell<Self>>, Action);
 
     fn next(&mut self) -> Option<Self::Item> {
         if self.index >= self.visited.len() {
             match self.to_visit.next() {
                 Some(a) => {
-                    let output = (Rc::new(self.env.what_if(&a)), a);
+                    let env_next = Rc::new(self.env.what_if(&a));
+                    let node_next = Rc::new(RefCell::new(Self::new(&env_next, D::default())));
+                    let output = (node_next, a);
                     self.visited.push(output.clone());
                     self.index += 1;
                     Some(output)
