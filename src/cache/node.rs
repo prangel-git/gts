@@ -11,6 +11,7 @@ pub type Cache<T, Action, AgentId> = HashMap<Rc<T>, NodeRcRefCell<T, Action, Age
 pub struct Node<T, Action, AgentId, D>
 where
     T: Environment<Action, AgentId>,
+    D: Default,
 {
     env: Rc<T>,
     turn: AgentId,
@@ -23,6 +24,7 @@ where
 impl<T, Action, AgentId, D> Node<T, Action, AgentId, D>
 where
     T: Environment<Action, AgentId>,
+    D: Default,
 {
     pub fn new(env: &Rc<T>, data: D) -> Self {
         Node {
@@ -52,6 +54,7 @@ impl<T, Action, AgentId, D> Iterator for Node<T, Action, AgentId, D>
 where
     Action: Copy,
     T: Environment<Action, AgentId>,
+    D: Default,
 {
     type Item = (Rc<T>, Action);
 

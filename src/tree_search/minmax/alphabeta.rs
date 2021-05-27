@@ -28,7 +28,7 @@ where
     T: Environment<Action, AgentId> + Clone + Eq + Hash,
 {
     let is_maximizer = env.turn() == *agent_id;
-    let root = get_or_insert(cache_old, env, is_maximizer);
+    let root = get_or_insert(cache_old, env);
     let mut root_ptr = root.borrow_mut();
 
     if root_ptr.data.depth >= depth {

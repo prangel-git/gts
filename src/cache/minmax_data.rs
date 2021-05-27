@@ -24,3 +24,14 @@ impl<Action> MinMaxData<Action> {
         }
     }
 }
+
+impl<Action> Default for MinMaxData<Action> {
+    fn default() -> Self {
+        MinMaxData {
+            is_maximizer: true,
+            depth: 0,
+            value: f64::NAN,
+            action: None
+        }        
+    }
+}

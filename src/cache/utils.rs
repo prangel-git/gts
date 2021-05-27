@@ -14,7 +14,6 @@ use super::node::NodeRcRefCell;
 pub fn get_or_insert<T, Action, AgentId>(
     cache: &mut Cache<T, Action, AgentId>,
     key: &Rc<T>,
-    is_maximizer: bool,
 ) -> NodeRcRefCell<T, Action, AgentId>
 where
     T: Environment<Action, AgentId> + Eq + Hash,
@@ -23,7 +22,7 @@ where
         .entry(key.clone())
         .or_insert(Rc::new(RefCell::new(Node::new(
             &key,
-            MinMaxData::new(is_maximizer),
+            MinMaxData::default(),
         ))));
     output.clone()
 }
