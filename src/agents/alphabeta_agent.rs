@@ -65,6 +65,8 @@ where
 
         self.root = Some(node.clone());
 
+        Node::rebase_cache(node.clone());
+
         alphabeta(
             &node,
             &self.agent_id,
@@ -74,17 +76,16 @@ where
             f64::INFINITY,
         );
 
-        let node_ptr = node.borrow_mut();
-
         println!(
             "Agent {:?} Action {:?}, Value {:?}, CacheSize {:?}",
             self.agent_id,
-            node_ptr.data.action,
-            node_ptr.data.value,
-            node_ptr.cache_ptr.borrow().len()
+            node.borrow().data.action,
+            node.borrow().data.value,
+            node.borrow().cache_ptr.borrow().len()
         );
-        node_ptr.rebase_cache();
 
-        node_ptr.data.action
+        let output = node.borrow().data.action.clone();
+
+        output
     }
 }

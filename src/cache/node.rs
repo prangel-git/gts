@@ -63,13 +63,25 @@ where
         }
     }
 
-    pub fn rebase_cache(&self) {
-        let mut cache_ptr = self.cache_ptr.borrow_mut();
-        cache_ptr.clear();
-        self.add_descendants();
+    pub fn rebase_cache(root: NodeRR<T, Action, AgentId, D>) {
+        let mut cache = Cache::new();
+
+        let env = root.borrow().env.clone();
+        cache.insert(env, root.clone());
+
+        root.borrow().add_descendants(&mut cache);
+
+        let root_ptr = root.borrow();
+        let mut cache_ptr = root_ptr.cache_ptr.borrow_mut();
+        cache_ptr.clone_from(&cache);
     }
 
-    fn add_descendants(&self) {
+    fn add_descendants(&self, cache: &mut Cache<T, Action, AgentId, D>) {
+        for (child, _) in &self.visited {
+            let child_ptr = child.borrow();
+            cache.insert(child_ptr.env.clone(), child.clone());
+            child.borrow().add_descendants(cache);
+        }
     }
 
     pub fn reset(&mut self) {
