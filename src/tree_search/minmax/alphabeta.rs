@@ -27,14 +27,20 @@ where
 {
     let env = node.clone().borrow().environment().clone();
 
+    // Reading from the cache does not work because the same two environments can be duplicated in memory.
+    /*
     let node_tmp = match cache.get(&env) {
         Some(ptr) => ptr.clone(),
         None => node.clone(),
     };
 
     let mut node_ptr = node_tmp.borrow_mut();
+    */
+
+    let mut node_ptr = node.borrow_mut();
 
     let is_maximizer = env.turn() == *agent_id;
+    node_ptr.data.is_maximizer = is_maximizer;
 
     if node_ptr.data.depth >= depth {
         return node_ptr.data.value;
@@ -50,6 +56,7 @@ where
         let mut next_alpha = alpha;
 
         node_ptr.reset();
+        node_ptr.sort_children();
         while let Some((next_env, action)) = node_ptr.next() {
             let next_value = alphabeta(
                 &next_env,
@@ -77,6 +84,7 @@ where
         let mut next_beta = beta;
 
         node_ptr.reset();
+        node_ptr.sort_children();
         while let Some((next_env, action)) = node_ptr.next() {
             let next_value = alphabeta(
                 &next_env,
@@ -101,5 +109,6 @@ where
     }
 
     cache.insert(env.clone(), node.clone());
+
     node_ptr.data.value
 }

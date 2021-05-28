@@ -3,6 +3,7 @@ use std::{cell::RefCell, collections::HashMap, rc::Rc};
 use crate::abstractions::Environment;
 
 use super::minmax_data::MinMaxData;
+use super::utils::node_partial_cmp;
 
 pub type NodeRcRefCell<T, Action, AgentId> =
     Rc<RefCell<Node<T, Action, AgentId, MinMaxData<Action>>>>;
@@ -75,6 +76,22 @@ where
             let index = self.index;
             self.index += 1;
             Some(self.visited[index].clone())
+        }
+    }
+}
+
+impl<T, Action, AgentId> Node<T, Action, AgentId, MinMaxData<Action>>
+where
+    T: Environment<Action, AgentId>,
+{
+    pub fn sort_children(&mut self) {
+        let is_maximizer = self.data.is_maximizer;
+        if is_maximizer {
+            self.visited
+                .sort_by(|(a, _), (b, _)| node_partial_cmp(b, a))
+        } else {
+            self.visited
+                .sort_by(|(a, _), (b, _)| node_partial_cmp(a, b))
         }
     }
 }

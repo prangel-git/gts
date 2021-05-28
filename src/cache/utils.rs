@@ -26,3 +26,19 @@ where
         ))));
     output.clone()
 }
+
+// Partial comparison for two nodes.
+pub fn node_partial_cmp<T, Action, AgentId>(
+    lhs: &NodeRcRefCell<T, Action, AgentId>,
+    rhs: &NodeRcRefCell<T, Action, AgentId>,
+) -> std::cmp::Ordering
+where
+    T: Environment<Action, AgentId>,
+{
+    let lhs_value = lhs.borrow().data.value;
+    let rhs_value = rhs.borrow().data.value;
+
+    lhs_value
+        .partial_cmp(&rhs_value)
+        .unwrap_or_else(|| panic!("Comparing to NaN"))
+}
