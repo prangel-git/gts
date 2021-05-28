@@ -29,18 +29,12 @@ where
 
     // Reading from the cache does not work because the same two environments can be duplicated in memory.
     // This is an ugly solution to that.
-    let node_tmp = match cache.get(&env) {
-        Some(ptr) => {
-            let mut node_ptr = node.borrow_mut();
-            node_ptr.data = ptr.borrow().data;
-            ptr.clone()
-        }
-        None => node.clone(),
+    if let Some(ptr) = cache.get(&env) {
+        let mut node_ptr = node.borrow_mut();
+        node_ptr.data = ptr.borrow().data;
     };
 
-    let mut node_ptr = node_tmp.borrow_mut();
-
-    // let mut node_ptr = node.borrow_mut();
+    let mut node_ptr = node.borrow_mut();
 
     let is_maximizer = env.turn() == *agent_id;
     node_ptr.data.is_maximizer = is_maximizer;
