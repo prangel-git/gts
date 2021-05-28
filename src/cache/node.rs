@@ -27,7 +27,7 @@ where
     to_visit: Box<dyn Iterator<Item = Action>>,
     index: usize,
     pub data: D,
-    pub cache_ptr: CacheRR<T, Action, AgentId, D>,
+    cache_ptr: CacheRR<T, Action, AgentId, D>,
 }
 
 impl<T, Action, AgentId, D> Node<T, Action, AgentId, D>
@@ -92,6 +92,17 @@ where
 
     pub fn turn(&self) -> &AgentId {
         &self.turn
+    }
+
+    pub fn cache_len(&self) -> usize {
+        self.cache_ptr.borrow_mut().len()
+    }
+
+    pub fn cache_get(&self, env: &T) -> Option<Rc<RefCell<Node<T, Action, AgentId, D>>>> {
+        match self.cache_ptr.borrow().get(env) {
+            Some(node) => {Some(node.clone())}
+            None => {None}
+        }
     }
 }
 

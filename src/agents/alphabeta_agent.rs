@@ -54,7 +54,7 @@ where
         let env_rc = Rc::new(env.clone());
         let node = match &self.root {
             Some(n) => {
-                if let Some(value) = n.borrow().cache_ptr.borrow().get(&env_rc) {
+                if let Some(value) = n.borrow().cache_get(&env_rc) {
                     value.clone()
                 } else {
                     Rc::new(RefCell::new(Node::new(&env_rc)))
@@ -81,7 +81,7 @@ where
             self.agent_id,
             node.borrow().data.action,
             node.borrow().data.value,
-            node.borrow().cache_ptr.borrow().len()
+            node.borrow().cache_len()
         );
 
         let output = node.borrow().data.action.clone();
