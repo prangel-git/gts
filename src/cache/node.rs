@@ -64,16 +64,14 @@ where
     }
 
     pub fn rebase_cache(root: NodeRR<T, Action, AgentId, D>) {
-        let mut cache = Cache::new();
-
-        let env = root.borrow().env.clone();
-        cache.insert(env, root.clone());
-
-        root.borrow().add_descendants(&mut cache);
-
         let root_ptr = root.borrow();
         let mut cache_ptr = root_ptr.cache_ptr.borrow_mut();
-        cache_ptr.clone_from(&cache);
+
+        let env = root_ptr.env.clone();
+        cache_ptr.clear();
+        cache_ptr.insert(env, root.clone());
+
+        root_ptr.add_descendants(&mut cache_ptr);
     }
 
     fn add_descendants(&self, cache: &mut Cache<T, Action, AgentId, D>) {
