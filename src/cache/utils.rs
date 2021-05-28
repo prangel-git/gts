@@ -11,8 +11,8 @@ use super::node::NodeRRMM;
 
 /// Gets or insert a node into the cache
 pub fn get_or_insert<T, Action, AgentId, D>(
-    cache_ptr: CacheRR<T, Action, AgentId, D>,
     key: &Rc<T>,
+    cache_ptr: CacheRR<T, Action, AgentId, D>,
 ) -> NodeRR<T, Action, AgentId, D>
 where
     T: Environment<Action, AgentId> + Eq + Hash,
