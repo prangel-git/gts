@@ -4,21 +4,24 @@ use std::rc::Rc;
 
 use crate::abstractions::Environment;
 
-use super::node::CacheMM;
+use super::node::CacheRR;
 use super::node::Node;
+use super::node::NodeRR;
 use super::node::NodeRRMM;
 
 /// Gets or insert a node into the cache
-pub fn get_or_insert<T, Action, AgentId>(
-    cache: &mut CacheMM<T, Action, AgentId>,
+pub fn get_or_insert<T, Action, AgentId, D>(
+    cache_ptr: CacheRR<T, Action, AgentId, D>,
     key: &Rc<T>,
-) -> NodeRRMM<T, Action, AgentId>
+) -> NodeRR<T, Action, AgentId, D>
 where
     T: Environment<Action, AgentId> + Eq + Hash,
+    D: Default,
 {
+    let mut cache = cache_ptr.borrow_mut();
     let output = cache
         .entry(key.clone())
-        .or_insert(Rc::new(RefCell::new(Node::new(&key))));
+        .or_insert(Rc::new(RefCell::new(Node::with_cache(&key, cache_ptr.clone()))));
     output.clone()
 }
 

@@ -8,10 +8,10 @@ use super::utils::node_partial_cmp;
 pub type NodeRRMM<T, Action, AgentId> = NodeRR<T, Action, AgentId, MinMaxData<Action>>;
 pub type CacheMM<T, Action, AgentId> = Cache<T, Action, AgentId, MinMaxData<Action>>;
 
-type NodeRR<T, Action, AgentId, D> = Rc<RefCell<Node<T, Action, AgentId, D>>>;
+pub(super) type NodeRR<T, Action, AgentId, D> = Rc<RefCell<Node<T, Action, AgentId, D>>>;
 
 type Cache<T, Action, AgentId, D> = HashMap<Rc<T>, NodeRR<T, Action, AgentId, D>>;
-type CacheRR<T, Action, AgentId, D> = Rc<RefCell<Cache<T, Action, AgentId, D>>>;
+pub(super) type CacheRR<T, Action, AgentId, D> = Rc<RefCell<Cache<T, Action, AgentId, D>>>;
 
 pub struct Node<T, Action, AgentId, D>
 where
