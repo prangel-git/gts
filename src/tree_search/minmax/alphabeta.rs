@@ -25,7 +25,15 @@ where
     AgentId: Eq,
     T: Environment<Action, AgentId> + Clone + Eq + Hash,
 {
-    let mut node_ptr = node.borrow_mut();
+    let env = node.clone().borrow().environment().clone();
+
+    let node_tmp = match cache.get(&env) {
+        Some(ptr) => ptr.clone(),
+        None => node.clone(),
+    };
+
+    let mut node_ptr = node_tmp.borrow_mut();
+
     let env = node_ptr.environment().clone();
 
     let is_maximizer = env.turn() == *agent_id;
