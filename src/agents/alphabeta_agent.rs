@@ -1,5 +1,4 @@
 use std::cell::RefCell;
-use std::collections::HashMap;
 use std::fmt::Debug;
 use std::hash::Hash;
 use std::rc::Rc;
@@ -34,7 +33,7 @@ where
             agent_id,
             reward,
             depth: depth + 1, // Avoiding depth 0. With depth 0, minmax does nothing.
-            cache: HashMap::new(),
+            cache: Cache::new(),
         }
     }
 }
