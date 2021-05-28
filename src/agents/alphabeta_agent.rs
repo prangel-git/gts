@@ -6,8 +6,8 @@ use std::rc::Rc;
 use crate::abstractions::Agent;
 use crate::abstractions::Environment;
 
-use crate::cache::node::CacheMM;
 use crate::cache::node::Node;
+use crate::cache::node::NodeRRMM;
 use crate::tree_search::alphabeta;
 
 /// A minmax agent plays based on a reward function and exploration of the game tree up to a given depth.
@@ -19,7 +19,7 @@ where
     agent_id: AgentId,
     reward: &'a dyn Fn(&T, &AgentId) -> f64,
     depth: usize,
-    cache: CacheMM<T, Action, AgentId>,
+    root: Option<NodeRRMM<T, Action, AgentId>>,
 }
 
 /// Methods for MinmaxAgent
@@ -32,7 +32,7 @@ where
             agent_id,
             reward,
             depth: depth + 1, // Avoiding depth 0. With depth 0, minmax does nothing.
-            cache: CacheMM::new(),
+            root: None,
         }
     }
 }
@@ -52,12 +52,10 @@ where
     /// Produces an action based on minmax search.
     fn action(&mut self, env: &T) -> Option<Action> {
         let env_rc = Rc::new(env.clone());
-        let node = match self.cache.get(env) {
+        let node = match &self.root {
             Some(n) => n.clone(),
             None => Rc::new(RefCell::new(Node::new(&env_rc))),
         };
-
-        self.cache.clear();
 
         alphabeta(
             &node,
@@ -66,24 +64,20 @@ where
             self.depth,
             f64::NEG_INFINITY,
             f64::INFINITY,
-            &mut self.cache,
         );
 
-        match self.cache.get(&env_rc) {
-            Some(node_ptr) => {
-                println!(
-                    "Agent {:?} Action {:?}, Value {:?}, CacheSize {:?}",
-                    self.agent_id,
-                    node_ptr.borrow().data.action,
-                    node_ptr.borrow().data.value,
-                    self.cache.len()
-                );
-                node_ptr.borrow().data.action
-            }
-            None => {
-                println!("Agent {:?} didn't find a move", self.agent_id);
-                None
-            }
-        }
+        let node_ptr = node.borrow_mut();
+
+        println!(
+            "Agent {:?} Action {:?}, Value {:?}, CacheSize {:?}",
+            self.agent_id,
+            node_ptr.data.action,
+            node_ptr.data.value,
+            node_ptr.cache_ptr.borrow().len()
+        );
+
+        node_ptr.data.action
+            
+        
     }
 }

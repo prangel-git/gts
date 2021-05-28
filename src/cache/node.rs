@@ -32,11 +32,11 @@ where
 
 impl<T, Action, AgentId, D> Node<T, Action, AgentId, D>
 where
-    T: Environment<Action, AgentId>,
+    T: Environment<Action, AgentId> + Hash + Eq,
     D: Default,
 {
     pub fn new(env: &Rc<T>) -> Self {
-        Node {
+        let node = Node {
             env: env.clone(),
             turn: env.turn(),
             visited: Vec::new(),
@@ -44,7 +44,11 @@ where
             index: 0,
             data: D::default(),
             cache_ptr: Rc::new(RefCell::new(Cache::new())),
-        }
+        };
+
+        super::utils::get_or_insert(&env, node.cache_ptr.clone());
+
+        return node;
     }
 
     pub fn with_cache(env: &Rc<T>, cache_ptr: CacheRR<T, Action, AgentId, D>) -> Self {

@@ -1,5 +1,4 @@
 use crate::abstractions::Environment;
-use crate::cache::node::CacheMM;
 
 use crate::cache::node::NodeRRMM;
 
@@ -18,7 +17,6 @@ pub fn alphabeta<Action, AgentId, T>(
     depth: usize,
     alpha: f64,
     beta: f64,
-    cache: &mut CacheMM<T, Action, AgentId>,
 ) -> f64
 where
     Action: Copy,
@@ -28,14 +26,6 @@ where
     let env = node.clone().borrow().environment().clone();
 
     let mut node_ptr = node.borrow_mut();
-
-    // Reading from the cache does not work because the same two environments can be duplicated in memory.
-    // This is an ugly solution to that.
-    if let Some(ptr) = cache.get(&env) {
-        if node_ptr.data.depth < ptr.borrow().data.depth {
-            node_ptr.data = ptr.borrow().data;
-        }
-    };
 
     let is_maximizer = env.turn() == *agent_id;
     node_ptr.data.is_maximizer = is_maximizer;
@@ -63,7 +53,6 @@ where
                 depth - 1,
                 next_alpha,
                 beta,
-                cache,
             );
 
             if next_value > node_ptr.data.value {
@@ -91,7 +80,6 @@ where
                 depth - 1,
                 alpha,
                 next_beta,
-                cache,
             );
 
             if next_value < node_ptr.data.value {
@@ -105,8 +93,6 @@ where
             }
         }
     }
-
-    cache.insert(env.clone(), node.clone());
 
     node_ptr.data.value
 }
