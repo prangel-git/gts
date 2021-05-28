@@ -6,8 +6,7 @@ use std::rc::Rc;
 use crate::abstractions::Agent;
 use crate::abstractions::Environment;
 
-use crate::cache::minmax_data::MinMaxData;
-use crate::cache::node::Cache;
+use crate::cache::node::CacheMM;
 use crate::cache::node::Node;
 use crate::tree_search::alphabeta;
 
@@ -20,7 +19,7 @@ where
     agent_id: AgentId,
     reward: &'a dyn Fn(&T, &AgentId) -> f64,
     depth: usize,
-    cache: Cache<T, Action, AgentId>,
+    cache: CacheMM<T, Action, AgentId>,
 }
 
 /// Methods for MinmaxAgent
@@ -33,7 +32,7 @@ where
             agent_id,
             reward,
             depth: depth + 1, // Avoiding depth 0. With depth 0, minmax does nothing.
-            cache: Cache::new(),
+            cache: CacheMM::new(),
         }
     }
 }
@@ -55,7 +54,7 @@ where
         let env_rc = Rc::new(env.clone());
         let node = match self.cache.get(env) {
             Some(n) => n.clone(),
-            None => Rc::new(RefCell::new(Node::new(&env_rc, MinMaxData::default()))),
+            None => Rc::new(RefCell::new(Node::new(&env_rc))),
         };
 
         self.cache.clear();

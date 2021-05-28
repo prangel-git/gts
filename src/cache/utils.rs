@@ -4,17 +4,15 @@ use std::rc::Rc;
 
 use crate::abstractions::Environment;
 
-use super::minmax_data::MinMaxData;
-
-use super::node::Cache;
+use super::node::CacheMM;
 use super::node::Node;
-use super::node::NodeRcRefCell;
+use super::node::NodeRRMM;
 
 /// Gets or insert a node into the cache
 pub fn get_or_insert<T, Action, AgentId>(
-    cache: &mut Cache<T, Action, AgentId>,
+    cache: &mut CacheMM<T, Action, AgentId>,
     key: &Rc<T>,
-) -> NodeRcRefCell<T, Action, AgentId>
+) -> NodeRRMM<T, Action, AgentId>
 where
     T: Environment<Action, AgentId> + Eq + Hash,
 {
@@ -22,15 +20,14 @@ where
         .entry(key.clone())
         .or_insert(Rc::new(RefCell::new(Node::new(
             &key,
-            MinMaxData::default(),
         ))));
     output.clone()
 }
 
 // Partial comparison for two nodes.
 pub fn node_partial_cmp<T, Action, AgentId>(
-    lhs: &NodeRcRefCell<T, Action, AgentId>,
-    rhs: &NodeRcRefCell<T, Action, AgentId>,
+    lhs: &NodeRRMM<T, Action, AgentId>,
+    rhs: &NodeRRMM<T, Action, AgentId>,
 ) -> std::cmp::Ordering
 where
     T: Environment<Action, AgentId>,

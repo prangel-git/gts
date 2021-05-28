@@ -1,7 +1,7 @@
 use crate::abstractions::Environment;
-use crate::cache::node::Cache;
+use crate::cache::node::CacheMM;
 
-use crate::cache::node::NodeRcRefCell;
+use crate::cache::node::NodeRRMM;
 
 use std::hash::Hash;
 
@@ -12,13 +12,13 @@ use super::utils::terminal_score;
 /// possible actions up to a given depth, and assumes that all visiting agents will take
 /// actions that will maximize the reward function.
 pub fn alphabeta<Action, AgentId, T>(
-    node: &NodeRcRefCell<T, Action, AgentId>,
+    node: &NodeRRMM<T, Action, AgentId>,
     agent_id: &AgentId,
     reward: &dyn Fn(&T, &AgentId) -> f64,
     depth: usize,
     alpha: f64,
     beta: f64,
-    cache: &mut Cache<T, Action, AgentId>,
+    cache: &mut CacheMM<T, Action, AgentId>,
 ) -> f64
 where
     Action: Copy,
