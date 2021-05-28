@@ -5,15 +5,13 @@ use crate::abstractions::Environment;
 use super::minmax_data::MinMaxData;
 use super::utils::node_partial_cmp;
 
-pub type NodeRRMM<T, Action, AgentId> =
-    NodeRR<T, Action, AgentId, MinMaxData<Action>>;
+pub type NodeRRMM<T, Action, AgentId> = NodeRR<T, Action, AgentId, MinMaxData<Action>>;
 pub type CacheMM<T, Action, AgentId> = Cache<T, Action, AgentId, MinMaxData<Action>>;
 
 type NodeRR<T, Action, AgentId, D> = Rc<RefCell<Node<T, Action, AgentId, D>>>;
 
 type Cache<T, Action, AgentId, D> = HashMap<Rc<T>, NodeRR<T, Action, AgentId, D>>;
 type CacheRR<T, Action, AgentId, D> = Rc<RefCell<Cache<T, Action, AgentId, D>>>;
-
 
 pub struct Node<T, Action, AgentId, D>
 where
@@ -45,14 +43,14 @@ where
         }
     }
 
-    pub fn with_cache(env: &Rc<T>, data: D, cache_ptr: CacheRR<T, Action, AgentId, D>) -> Self {
+    pub fn with_cache(env: &Rc<T>, cache_ptr: CacheRR<T, Action, AgentId, D>) -> Self {
         Node {
             env: env.clone(),
             turn: env.turn(),
             visited: Vec::new(),
             to_visit: env.valid_actions(),
             index: 0,
-            data,
+            data: D::default(),
             cache_ptr,
         }
     }
@@ -83,8 +81,9 @@ where
             match self.to_visit.next() {
                 Some(a) => {
                     let env_next = Rc::new(self.env.what_if(&a));
-                    let node_next = Rc::new(RefCell::new(Self::new(&env_next)));
-                    let output = (node_next, a);
+                    let next_node = Self::with_cache(&env_next, self.cache_ptr.clone());
+                    let node_next_ptr = Rc::new(RefCell::new(next_node));
+                    let output = (node_next_ptr, a);
                     self.visited.push(output.clone());
                     self.index += 1;
                     Some(output)

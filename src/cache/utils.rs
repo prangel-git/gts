@@ -18,9 +18,7 @@ where
 {
     let output = cache
         .entry(key.clone())
-        .or_insert(Rc::new(RefCell::new(Node::new(
-            &key,
-        ))));
+        .or_insert(Rc::new(RefCell::new(Node::new(&key))));
     output.clone()
 }
 
