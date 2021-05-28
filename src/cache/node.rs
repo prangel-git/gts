@@ -1,8 +1,12 @@
-use std::{cell::RefCell, collections::HashMap, rc::Rc};
+use std::cell::RefCell;
+use std::collections::HashMap;
+use std::hash::Hash;
+use std::rc::Rc;
 
 use crate::abstractions::Environment;
 
 use super::minmax_data::MinMaxData;
+use super::utils::get_or_insert;
 use super::utils::node_partial_cmp;
 
 pub type NodeRRMM<T, Action, AgentId> = NodeRR<T, Action, AgentId, MinMaxData<Action>>;
@@ -71,7 +75,7 @@ where
 impl<T, Action, AgentId, D> Iterator for Node<T, Action, AgentId, D>
 where
     Action: Copy,
-    T: Environment<Action, AgentId>,
+    T: Environment<Action, AgentId> + Hash + Eq,
     D: Default,
 {
     type Item = (Rc<RefCell<Self>>, Action);
@@ -81,8 +85,7 @@ where
             match self.to_visit.next() {
                 Some(a) => {
                     let env_next = Rc::new(self.env.what_if(&a));
-                    let next_node = Self::with_cache(&env_next, self.cache_ptr.clone());
-                    let node_next_ptr = Rc::new(RefCell::new(next_node));
+                    let node_next_ptr = get_or_insert(&env_next, self.cache_ptr.clone());
                     let output = (node_next_ptr, a);
                     self.visited.push(output.clone());
                     self.index += 1;

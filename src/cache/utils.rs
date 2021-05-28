@@ -21,7 +21,10 @@ where
     let mut cache = cache_ptr.borrow_mut();
     let output = cache
         .entry(key.clone())
-        .or_insert(Rc::new(RefCell::new(Node::with_cache(&key, cache_ptr.clone()))));
+        .or_insert(Rc::new(RefCell::new(Node::with_cache(
+            &key,
+            cache_ptr.clone(),
+        ))));
     output.clone()
 }
 
