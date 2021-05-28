@@ -46,14 +46,7 @@ where
         node_ptr.reset();
         node_ptr.sort_children();
         while let Some((next_env, action)) = node_ptr.next() {
-            let next_value = alphabeta(
-                &next_env,
-                agent_id,
-                reward,
-                depth - 1,
-                next_alpha,
-                beta,
-            );
+            let next_value = alphabeta(&next_env, agent_id, reward, depth - 1, next_alpha, beta);
 
             if next_value > node_ptr.data.value {
                 node_ptr.data.value = next_value;
@@ -73,14 +66,7 @@ where
         node_ptr.reset();
         node_ptr.sort_children();
         while let Some((next_env, action)) = node_ptr.next() {
-            let next_value = alphabeta(
-                &next_env,
-                agent_id,
-                reward,
-                depth - 1,
-                alpha,
-                next_beta,
-            );
+            let next_value = alphabeta(&next_env, agent_id, reward, depth - 1, alpha, next_beta);
 
             if next_value < node_ptr.data.value {
                 node_ptr.data.value = next_value;

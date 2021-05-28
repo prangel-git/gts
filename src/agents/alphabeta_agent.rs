@@ -53,9 +53,17 @@ where
     fn action(&mut self, env: &T) -> Option<Action> {
         let env_rc = Rc::new(env.clone());
         let node = match &self.root {
-            Some(n) => n.clone(),
+            Some(n) => {
+                if let Some(value) = n.borrow().cache_ptr.borrow().get(&env_rc) {
+                    value.clone()
+                } else {
+                    Rc::new(RefCell::new(Node::new(&env_rc)))
+                }
+            }
             None => Rc::new(RefCell::new(Node::new(&env_rc))),
         };
+
+        self.root = Some(node.clone());
 
         alphabeta(
             &node,
@@ -75,9 +83,8 @@ where
             node_ptr.data.value,
             node_ptr.cache_ptr.borrow().len()
         );
+        node_ptr.rebase_cache();
 
         node_ptr.data.action
-            
-        
     }
 }
