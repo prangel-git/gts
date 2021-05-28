@@ -81,7 +81,10 @@ where
                 );
                 node_ptr.borrow().data.action
             }
-            None => None,
+            None => {
+                println!("Agent {:?} didn't find a move", self.agent_id);
+                None
+            }
         }
     }
 }
