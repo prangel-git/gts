@@ -100,8 +100,8 @@ where
 
     pub fn cache_get(&self, env: &T) -> Option<Rc<RefCell<Node<T, Action, AgentId, D>>>> {
         match self.cache_ptr.borrow().get(env) {
-            Some(node) => {Some(node.clone())}
-            None => {None}
+            Some(node) => Some(node.clone()),
+            None => None,
         }
     }
 }

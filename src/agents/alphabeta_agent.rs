@@ -52,23 +52,23 @@ where
     /// Produces an action based on minmax search.
     fn action(&mut self, env: &T) -> Option<Action> {
         let env_rc = Rc::new(env.clone());
-        let node = match &self.root {
-            Some(n) => {
-                if let Some(value) = n.borrow().cache_get(&env_rc) {
-                    value.clone()
-                } else {
-                    Rc::new(RefCell::new(Node::new(&env_rc)))
-                }
-            }
-            None => Rc::new(RefCell::new(Node::new(&env_rc))),
-        };
 
-        self.root = Some(node.clone());
+        let current_root = self
+            .root
+            .clone()
+            .unwrap_or(Rc::new(RefCell::new(Node::new(&env_rc))));
 
-        Node::rebase_cache(node.clone());
+        let new_root = current_root
+            .borrow()
+            .cache_get(&env_rc)
+            .unwrap_or(Rc::new(RefCell::new(Node::new(&env_rc))));
+
+        self.root = Some(new_root.clone());
+
+        Node::rebase_cache(new_root.clone());
 
         alphabeta(
-            &node,
+            &new_root,
             &self.agent_id,
             self.reward,
             self.depth,
@@ -79,12 +79,12 @@ where
         println!(
             "Agent {:?} Action {:?}, Value {:?}, CacheSize {:?}",
             self.agent_id,
-            node.borrow().data.action,
-            node.borrow().data.value,
-            node.borrow().cache_len()
+            new_root.borrow().data.action,
+            new_root.borrow().data.value,
+            new_root.borrow().cache_len()
         );
 
-        let output = node.borrow().data.action.clone();
+        let output = new_root.borrow().data.action.clone();
 
         output
     }
