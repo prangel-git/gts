@@ -1,3 +1,4 @@
+#[derive(Clone, Copy)]
 pub struct MinMaxData<Action> {
     pub is_maximizer: bool,
     pub depth: usize,
