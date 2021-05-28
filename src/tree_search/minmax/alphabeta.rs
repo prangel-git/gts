@@ -27,14 +27,15 @@ where
 {
     let env = node.clone().borrow().environment().clone();
 
+    let mut node_ptr = node.borrow_mut();
+
     // Reading from the cache does not work because the same two environments can be duplicated in memory.
     // This is an ugly solution to that.
     if let Some(ptr) = cache.get(&env) {
-        let mut node_ptr = node.borrow_mut();
-        node_ptr.data = ptr.borrow().data;
+        if node_ptr.data.depth < ptr.borrow().data.depth {
+            node_ptr.data = ptr.borrow().data;
+        }
     };
-
-    let mut node_ptr = node.borrow_mut();
 
     let is_maximizer = env.turn() == *agent_id;
     node_ptr.data.is_maximizer = is_maximizer;
