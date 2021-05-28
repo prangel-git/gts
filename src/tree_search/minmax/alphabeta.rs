@@ -45,6 +45,7 @@ where
         node_ptr.data.depth = 1;
         node_ptr.data.value = reward(env.as_ref(), agent_id);
     } else if is_maximizer {
+        node_ptr.data.depth = depth;
         node_ptr.data.value = f64::NEG_INFINITY;
         let mut next_alpha = alpha;
 
@@ -59,6 +60,7 @@ where
                 beta,
                 cache,
             );
+
             if next_value > node_ptr.data.value {
                 node_ptr.data.value = next_value;
                 next_alpha = next_value;
@@ -69,8 +71,8 @@ where
                 break;
             }
         }
-        node_ptr.data.depth = depth;
     } else {
+        node_ptr.data.depth = depth;
         node_ptr.data.value = f64::INFINITY;
         let mut next_beta = beta;
 
@@ -85,6 +87,7 @@ where
                 next_beta,
                 cache,
             );
+
             if next_value < node_ptr.data.value {
                 node_ptr.data.value = next_value;
                 next_beta = next_value;
@@ -95,7 +98,6 @@ where
                 break;
             }
         }
-        node_ptr.data.depth = depth;
     }
 
     cache.insert(env.clone(), node.clone());
