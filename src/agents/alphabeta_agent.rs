@@ -25,7 +25,7 @@ where
 /// Methods for MinmaxAgent
 impl<'a, Action, AgentId, T> AlphabetaAgent<'a, Action, AgentId, T>
 where
-    T: Environment<Action, AgentId>,
+    T: Environment<Action, AgentId> + Eq + Hash + Clone,
 {
     pub fn new(agent_id: AgentId, reward: &'a dyn Fn(&T, &AgentId) -> f64, depth: usize) -> Self {
         AlphabetaAgent {
@@ -35,6 +35,25 @@ where
             root: None,
         }
     }
+
+    fn update_root(&mut self, env: &T) -> NodeRRMM<T, Action, AgentId> {
+        let env_rc = Rc::new(env.clone());
+        let current_root = self
+            .root
+            .clone()
+            .unwrap_or(Rc::new(RefCell::new(Node::new(&env_rc))));
+        let new_root = current_root
+            .borrow()
+            .cache_get(&env_rc)
+            .unwrap_or(Rc::new(RefCell::new(Node::new(&env_rc))));
+
+        self.root = Some(new_root.clone());
+        
+        new_root.clone().borrow().rebase_cache();
+
+        new_root
+    }
+
 }
 
 /// Implements an agent that runs the minmax tree search arlgorithm to produce moves.
@@ -51,21 +70,7 @@ where
 
     /// Produces an action based on minmax search.
     fn action(&mut self, env: &T) -> Option<Action> {
-        let env_rc = Rc::new(env.clone());
-
-        let current_root = self
-            .root
-            .clone()
-            .unwrap_or(Rc::new(RefCell::new(Node::new(&env_rc))));
-
-        let new_root = current_root
-            .borrow()
-            .cache_get(&env_rc)
-            .unwrap_or(Rc::new(RefCell::new(Node::new(&env_rc))));
-
-        self.root = Some(new_root.clone());
-
-        new_root.clone().borrow().rebase_cache();
+        let new_root = self.update_root(env);
 
         alphabeta(
             &new_root,
