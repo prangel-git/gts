@@ -63,15 +63,15 @@ where
         }
     }
 
-    pub fn rebase_cache(root: NodeRR<T, Action, AgentId, D>) {
-        let root_ptr = root.borrow();
-        let mut cache_ptr = root_ptr.cache_ptr.borrow_mut();
+    pub fn rebase_cache(&self) {
+        let env = self.env.clone();
+        let root = get_or_insert(&env, self.cache_ptr.clone());
 
-        let env = root_ptr.env.clone();
+        let mut cache_ptr = self.cache_ptr.borrow_mut();
         cache_ptr.clear();
         cache_ptr.insert(env, root.clone());
 
-        root_ptr.add_descendants(&mut cache_ptr);
+        self.add_descendants(&mut cache_ptr);
     }
 
     fn add_descendants(&self, cache: &mut Cache<T, Action, AgentId, D>) {

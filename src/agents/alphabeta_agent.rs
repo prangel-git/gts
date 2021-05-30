@@ -65,7 +65,7 @@ where
 
         self.root = Some(new_root.clone());
 
-        Node::rebase_cache(new_root.clone());
+        new_root.clone().borrow().rebase_cache();
 
         alphabeta(
             &new_root,
