@@ -49,9 +49,10 @@ where
             let next_value = alphabeta(&next_env, agent_id, reward, depth - 1, next_alpha, beta);
 
             if next_value > node_ptr.data.value {
+                node_ptr.data.depth = next_env.borrow().data.depth + 1;
                 node_ptr.data.value = next_value;
-                next_alpha = next_value;
                 node_ptr.data.action = Some(action);
+                next_alpha = next_value;
             };
 
             if next_alpha >= beta {
@@ -69,9 +70,10 @@ where
             let next_value = alphabeta(&next_env, agent_id, reward, depth - 1, alpha, next_beta);
 
             if next_value < node_ptr.data.value {
+                node_ptr.data.depth = next_env.borrow().data.depth + 1;
                 node_ptr.data.value = next_value;
-                next_beta = next_value;
                 node_ptr.data.action = Some(action);
+                next_beta = next_value;
             }
 
             if next_beta <= alpha {
