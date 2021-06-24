@@ -6,6 +6,8 @@ use std::hash::Hash;
 
 use super::utils::terminal_score;
 
+const MAX_DEPTH: usize = usize::MAX >> 1; // Any depth larger than this bring its values from a terminal node.
+
 /// Given a reward function, an agent identifier, and an environment, this function returns
 /// an estimate of the value. To calculate that estimate, the functions visits the tree of
 /// possible actions up to a given depth, and assumes that all visiting agents will take
@@ -33,7 +35,7 @@ where
     if node_ptr.data.depth >= depth {
         return node_ptr.data.value;
     } else if env.is_terminal() {
-        node_ptr.data.depth = usize::MAX;
+        node_ptr.data.depth = MAX_DEPTH;
         node_ptr.data.value = terminal_score(env.as_ref(), agent_id);
     } else if depth == 1 {
         node_ptr.data.depth = 1;
